@@ -115,17 +115,37 @@ int main(int argc, char* argv[]) {
         lightSrc->SetLightColor(glm::vec3(1.0f, 0.9f, 0.8f));
     });
 
+    InputRegisterKey('i', KEY_HOLD, [lightSrc]() {
+        glm::vec3 currentPos = lightSrc->GetLocalPosition();
+        lightSrc->SetLocalPosition(glm::vec3(currentPos.x, currentPos.y + 0.05f, currentPos.z));
+    });
+
     InputRegisterKey('j', KEY_HOLD, [lightSrc]() {
+        glm::vec3 currentPos = lightSrc->GetLocalPosition();
+        lightSrc->SetLocalPosition(glm::vec3(currentPos.x - 0.05f, currentPos.y, currentPos.z));
+    });
+
+    InputRegisterKey('k', KEY_HOLD, [lightSrc]() {
+        glm::vec3 currentPos = lightSrc->GetLocalPosition();
+        lightSrc->SetLocalPosition(glm::vec3(currentPos.x, currentPos.y - 0.05f, currentPos.z));
+    });
+
+    InputRegisterKey('l', KEY_HOLD, [lightSrc]() {
+        glm::vec3 currentPos = lightSrc->GetLocalPosition();
+        lightSrc->SetLocalPosition(glm::vec3(currentPos.x + 0.05f, currentPos.y, currentPos.z));
+    });
+
+    InputRegisterKey('n', KEY_HOLD, [lightSrc]() {
         glm::vec3 currentColor = lightSrc->GetLightColor();
         lightSrc->SetLightColor(glm::vec3(currentColor.r < 0 ? 1.0f :currentColor.r - 0.01f, currentColor.g, currentColor.b));
     });
 
-    InputRegisterKey('k', KEY_HOLD, [lightSrc]() {
+    InputRegisterKey('m', KEY_HOLD, [lightSrc]() {
         glm::vec3 currentColor = lightSrc->GetLightColor();
         lightSrc->SetLightColor(glm::vec3(currentColor.r, currentColor.g < 0 ? 1.0f : currentColor.g - 0.01f, currentColor.b));
     });
 
-    InputRegisterKey('l', KEY_HOLD, [lightSrc]() {
+    InputRegisterKey(',', KEY_HOLD, [lightSrc]() {
         glm::vec3 currentColor = lightSrc->GetLightColor();
         lightSrc->SetLightColor(glm::vec3(currentColor.r, currentColor.g, currentColor.b < 0 ? 1.0f : currentColor.b - 0.01f));
     });
