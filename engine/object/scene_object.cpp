@@ -2,9 +2,11 @@
 
 #include <GL/glut.h>
 
+#include "object/light_object.h"
+
 Scene::Scene() : Object() {
     renderCamera = new Camera();
-    lightSource = new Object();
+    lightSource = new LightObject();
 }
 
 void Scene::Ready() {

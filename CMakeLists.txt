@@ -16,9 +16,13 @@ add_executable(main
     main.cpp
     
     engine/engine.cpp
+
+    engine/input/input_mapper.cpp
+
     engine/object/object.cpp
     engine/object/camera.cpp
     engine/object/scene_object.cpp
+    engine/object/light_object.cpp
 
     engine/rendering/shader_loader.cpp
     engine/rendering/model_drawer.cpp
@@ -26,6 +30,7 @@ add_executable(main
     code/object/cube.cpp
 
     code/rendering/phong_drawer.cpp
+    code/rendering/skybox_drawer.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)

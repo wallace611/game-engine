@@ -7,46 +7,72 @@ in vec3 Normal;
 in vec3 ourColor;
 in vec2 TexCoord;
 
+// We now have TWO texture samplers
 uniform sampler2D texture1;
+uniform sampler2D equirectangularMap; 
+
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform vec3 lightColor;
 
-void main() {
-    // 1. Calculate the distance between the light and the current pixel
-    float distance = length(lightPos - FragPos);
-    
-    // 2. Calculate Attenuation (Standard values for a light covering ~50 distance units)
-    // Constant (Kc) = 1.0, Linear (Kl) = 0.09, Quadratic (Kq) = 0.032
-    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));
+// Settings
+uniform float constant;
+uniform float linear;
+uniform float quadratic;
+uniform float ambientStrength;
+uniform float specularStrength;
+uniform float shininess;
+uniform vec2 tiling; 
+uniform vec2 scrollSpeed;
+uniform float time;
+uniform float reflectivity; // NEW
 
-    // 3. Ambient
-    float ambientStrength = 0.2;
+// Math for converting 3D reflection vector to 2D Panorama UV
+const vec2 invAtan = vec2(0.1591, 0.3183);
+vec2 SampleSphericalMap(vec3 v) {
+    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
+    uv *= invAtan;
+    uv += 0.5;
+    return uv;
+}
+
+void main() {
+    // 1. Standard Phong Lighting
+    float distance = length(lightPos - FragPos);
+    float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
     vec3 ambient = ambientStrength * lightColor;
-  	
-    // 4. Diffuse 
+    
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(lightPos - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
     
-    // 5. Specular
-    float specularStrength = 0.5;
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);  
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+    // Note: reflect expects incident vector (FROM camera TO fragment)
+    vec3 incidentDir = -viewDir; 
+    vec3 reflectDir = reflect(incidentDir, norm);  
+    
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = specularStrength * spec * lightColor;  
-        
-    // 6. Apply attenuation to all lighting components (Ambient can be excluded if desired)
-    ambient  *= attenuation;
-    diffuse  *= attenuation;
-    specular *= attenuation;
-
-    // 7. Combine lighting and texture
+    
+    ambient *= attenuation; diffuse *= attenuation; specular *= attenuation;
     vec3 lighting = ambient + diffuse + specular;
-    vec4 texColor = texture(texture1, TexCoord);
+    
+    // 2. Base Texture
+    vec2 currentUV = (TexCoord * tiling) + (scrollSpeed * time);
+    vec4 texColor = texture(texture1, currentUV);
     vec3 baseColor = texColor.rgb * ourColor;
+    vec3 finalColor = lighting * baseColor;
 
-    vec3 result = lighting * baseColor;
-    FragColor = vec4(result, texColor.a);
+    // 3. Environment Reflection (Only apply if reflectivity > 0.0)
+    if (reflectivity > 0.0) {
+        // Calculate where the reflection vector hits the panorama map
+        vec2 envUV = SampleSphericalMap(normalize(reflectDir));
+        vec3 envColor = texture(equirectangularMap, envUV).rgb;
+        
+        // Blend the base rendered color with the environment reflection
+        finalColor = mix(finalColor, envColor, reflectivity);
+    }
+    
+    FragColor = vec4(finalColor, texColor.a);
 }

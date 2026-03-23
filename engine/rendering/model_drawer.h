@@ -16,6 +16,8 @@ protected:
     void LoadTexture(const std::string& texture_path);
 
 public:
+    ModelDrawer(const std::string& texture_path);
     ModelDrawer(const std::string& shader_path, const std::string& texture_path);
     virtual void Draw();
+    GLuint GetTextureID() const { return texture; }
 };

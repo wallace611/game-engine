@@ -122,7 +122,9 @@ void ModelDrawer::LoadTexture(const std::string &texture_path) {
     stbi_image_free(data);
 }
 
-ModelDrawer::ModelDrawer(const std::string& shader_path, const std::string& texture_path) {
+ModelDrawer::ModelDrawer(const std::string& texture_path) : ModelDrawer("shader/shader", texture_path) {}
+
+ModelDrawer::ModelDrawer(const std::string &shader_path, const std::string &texture_path) {
     program = LoadShader(shader_path);
     SetupCube();
     LoadTexture(texture_path);

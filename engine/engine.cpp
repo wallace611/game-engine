@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "rendering/shader_loader.h"
+#include "input/input_mapper.h"
 
 int window_wid, window_hei;
 int mouse_center_x, mouse_center_y;
@@ -47,6 +48,8 @@ void EngineInit(int* argc, char** argv) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
+    InputMapperInit();
+
     // Register callbacks
     glutDisplayFunc(DisplayFunction);
     glutIdleFunc(IdleFunction);
@@ -77,8 +80,8 @@ double GetTimer() {
 void Tick(float deltatime) {
     timer += deltatime;
 
-    // imPressUpdate();
-
+    InputMapperUpdate();
+    
     char tmp[256];
     snprintf(tmp, sizeof(tmp),
         "frame rate: %3.1f, deltatime: %7.4f, timer: %7.2f\n",
