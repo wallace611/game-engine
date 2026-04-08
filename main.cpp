@@ -5,7 +5,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-#include "rendering/phong_drawer.h"
 #include "rendering/skybox_drawer.h"
 #include "input/input_mapper.h"
 #include "object/light_object.h"
@@ -21,63 +20,27 @@ int main(int argc, char* argv[]) {
 
     GLuint envMapTexture = dynamic_cast<SkyboxDrawer*>(skybox->GetDrawer())->GetTextureID();
 
-    Cube* cube = new Cube();
-    cube->SetGlobalPosition(glm::vec3(-0.25f, -1.0f, -5.0f));
-    cube->SetGlobalScale(glm::vec3(3.0f));
-    cube->SetDrawer(new PhongDrawer("textures/wood.png", cube));
-    PhongSettings woodSettings;
-    woodSettings.ambientStrength = 0.3f;
-    woodSettings.specularStrength = 0.5f;
-    woodSettings.shininess = 16.0f;
-    woodSettings.reflectivity = 0.2f;
-    PhongDrawer* woodDrawer = dynamic_cast<PhongDrawer*>(cube->GetDrawer());
-    woodDrawer->SetSettings(woodSettings);
-    GetScene()->AddChild(cube);
-
     Cube* ironCube = new Cube();
     ironCube->SetGlobalPosition(glm::vec3(2.0f, -1.0f, -5.0f));
     ironCube->SetGlobalScale(glm::vec3(3.0f));
-    ironCube->SetDrawer(new PhongDrawer("textures/iron.png", ironCube));
-    PhongSettings ironSettings;
-    ironSettings.ambientStrength = 0.1f;
-    ironSettings.specularStrength = 2.0f;
-    ironSettings.shininess = 64.0f;
-    ironSettings.reflectivity = 0.5f;
-    PhongDrawer* ironDrawer = dynamic_cast<PhongDrawer*>(ironCube->GetDrawer());
-    ironDrawer->SetSettings(ironSettings);
-    GetScene()->AddChild(ironCube);
+    ironCube->SetDrawer(new ModelDrawer("textures/iron.png"));
+   GetScene()->AddChild(ironCube);
 
     Cube* wierdCube = new Cube();
     wierdCube->SetGlobalPosition(glm::vec3(-2.5f, -1.0f, -5.0f));
     wierdCube->SetGlobalScale(glm::vec3(3.0f));
-    wierdCube->SetDrawer(new PhongDrawer("textures/wierd.png", wierdCube));
-    PhongSettings wierdSettings;
-    wierdSettings.ambientStrength = 0.5f;
-    wierdSettings.specularStrength = 0.5f;
-    wierdSettings.shininess = 8.0f;
-    wierdSettings.reflectivity = 0.8f;
-    wierdSettings.scrollSpeed = glm::vec2(0.1f, 1.0f);
-    PhongDrawer* wierdDrawer = dynamic_cast<PhongDrawer*>(wierdCube->GetDrawer());
-    wierdDrawer->SetSettings(wierdSettings);
+    wierdCube->SetDrawer(new ModelDrawer("textures/wierd.png"));
     GetScene()->AddChild(wierdCube);
 
     Cube* floor = new Cube();
     floor->SetGlobalPosition(glm::vec3(1.0f, -2.0f, 0.0f));
     floor->SetGlobalScale(glm::vec3(10.0f, 1.0f, 10.0f));
-    floor->SetDrawer(new PhongDrawer("textures/grass.png", floor));
-    PhongSettings floorSettings;
-    floorSettings.ambientStrength = 0.2f;
-    floorSettings.specularStrength = 0.05f;
-    floorSettings.shininess = 8.0f;
-    floorSettings.tiling = glm::vec2(20.0f, 20.0f);
-    dynamic_cast<PhongDrawer*>(floor->GetDrawer())->SetSettings(floorSettings);
+    floor->SetDrawer(new ModelDrawer("textures/grass.png"));
     GetScene()->AddChild(floor);
 
     LightObject* lightSrc = dynamic_cast<LightObject*>(GetScene()->GetLightSource());
     lightSrc->SetGlobalPosition(glm::vec3(0.0f, 0.5f, -1.0f));
     lightSrc->SetLightColor(glm::vec3(1.0f, 0.9f, 0.8f));
-
-    
 
     Camera* cam = GetScene()->GetCamera();
 

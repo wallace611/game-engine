@@ -1,19 +1,17 @@
 #pragma once
 
+#include "object.h"
+
 #include <glm/glm.hpp>
 
 #define GLM_ENABLE_EXPERIMENTA
 #include <glm/gtc/quaternion.hpp>
 
-class Camera {
+class Camera : public Object {
 protected:
     float fov;
     float zNear;
     float zFar;
-
-    // The absolute position and rotation of the camera
-    glm::vec3 localPosition;
-    glm::quat localRotation;
 
     // Vectors defining the camera's local coordinate system for lookAt
     glm::vec3 camFront;
@@ -45,7 +43,6 @@ public:
     glm::vec3 GetLocalRotationEuler() const;
 
     // --- Setters (Absolute Position and Rotation) ---
-    void SetLocalPosition(const glm::vec3& pos);
     void SetLocalRotation(const glm::quat& rot);
     void SetLocalRotation(const glm::vec3& eulerDegrees);
 
@@ -55,8 +52,8 @@ public:
     void Rotate(float pitch, float yaw);
 
     // --- Engine Loop ---
-    void Ready();
+    virtual void Ready() override;
     // Applies all pending inputs using deltatime, then clears them
-    void Update(float deltatime); 
-    void Render();
+    virtual void Update(float deltatime) override;
+    virtual void Render() override;
 };

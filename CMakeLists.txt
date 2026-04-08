@@ -29,7 +29,6 @@ add_executable(main
 
     code/object/cube.cpp
 
-    code/rendering/phong_drawer.cpp
     code/rendering/skybox_drawer.cpp
 )
 

@@ -10,7 +10,6 @@ out vec3 ourColor;
 out vec2 TexCoord;
 
 void main() {
-    // gl_ModelViewProjectionMatrix automatically applies your glMultMatrixf transforms
     gl_Position = gl_ModelViewProjectionMatrix * vec4(aPos, 1.0);
     
     // Pass the color and UV data to the fragment shader

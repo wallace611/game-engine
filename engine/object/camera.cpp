@@ -17,7 +17,6 @@ Camera::Camera() {
     // Set default movement speed (e.g., 5.0 units per second)
     movSpeed = glm::vec3(5.0f, 5.0f, 5.0f);
     
-    // Initialize FPS tracking variables
     // Yaw is -90.0f by default so the camera points at the -Z axis
     currentYaw = -90.0f; 
     currentPitch = 0.0f;
@@ -51,14 +50,8 @@ glm::vec3 Camera::GetLocalPosition() const { return localPosition; }
 glm::quat Camera::GetLocalRotation() const { return localRotation; }
 glm::vec3 Camera::GetLocalRotationEuler() const { return glm::degrees(glm::eulerAngles(localRotation)); }
 
-// ==========================================
-// Setters (Absolute Updates)
-// ==========================================
-void Camera::SetLocalPosition(const glm::vec3& pos) {
-    localPosition = pos;
-}
-
-void Camera::SetLocalRotation(const glm::quat& rot) {
+void Camera::SetLocalRotation(const glm::quat &rot)
+{
     localRotation = rot;
     
     // Sync the explicit FPS tracking variables with the new quaternion
@@ -66,7 +59,7 @@ void Camera::SetLocalRotation(const glm::quat& rot) {
     currentPitch = euler.x;
     currentYaw = euler.y;
 
-    UpdateCameraVectors(); 
+    UpdateCameraVectors();
 }
 
 void Camera::SetLocalRotation(const glm::vec3& eulerDegrees) {
@@ -77,9 +70,6 @@ void Camera::SetLocalRotation(const glm::vec3& eulerDegrees) {
     UpdateCameraVectors();
 }
 
-// ==========================================
-// Relative Modifiers (Deferred)
-// ==========================================
 void Camera::Move(const glm::vec3 direction) {
     // Accumulate movement direction (e.g., W and D pressed together)
     pendingMoveDirection += direction;
@@ -91,9 +81,6 @@ void Camera::Rotate(float pitch, float yaw) {
     pendingYawDelta += yaw;
 }
 
-// ==========================================
-// Engine Loop
-// ==========================================
 void Camera::Ready() {}
 
 void Camera::Update(float deltatime) {
