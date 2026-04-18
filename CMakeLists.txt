@@ -30,8 +30,6 @@ add_executable(main
 
     engine/rendering/shader_loader.cpp
     engine/rendering/model_drawer.cpp
-
-    code/object/cube.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)

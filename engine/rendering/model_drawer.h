@@ -7,17 +7,19 @@
 
 class ModelDrawer {
 protected:
-    GLuint vao, vbo;
+    GLuint vao, vbo, ebo;
+    unsigned int indicesCount;
     GLuint texture;
     GLuint program;
     unsigned int verticesCount;
 
     void SetupCube();
+    void LoadModel(const std::string& model_path);
     void LoadTexture(const std::string& texture_path);
 
 public:
-    ModelDrawer();
-    ModelDrawer(const std::string& texture_path);
+    ModelDrawer(const std::string& model_path);
+    ModelDrawer(const std::string& model_path, const std::string& texture_path);
     virtual void Draw();
     inline GLuint GetTextureID() const { return texture; }
 };

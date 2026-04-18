@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <vector>
+#include <functional>
 
 class ModelDrawer;
 
@@ -19,6 +20,8 @@ protected:
     Object* parent;
     std::vector<Object*> children;
     ModelDrawer* renderer;
+
+    std::function<void(Object* self, float deltatime)> tickFunction;
 
     // Helper function to recalculate matrices when TRS changes
     void UpdateTransforms();
@@ -53,9 +56,10 @@ public:
 
     // --- Engine Hierarchy & Rendering ---
     virtual glm::mat4 GetGlobalMatrix() const;
-    
+
+    void SetTickFunction(std::function<void(Object*, float)> tickFunc);
     void AddChild(Object* child);
-    ModelDrawer* GetDrawer();
+    ModelDrawer* GetDrawer() const;
     void SetDrawer(ModelDrawer* drawer);
 
     virtual void Ready();

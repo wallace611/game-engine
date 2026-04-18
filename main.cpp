@@ -1,8 +1,9 @@
+#include <glad/glad.h>
 #include "engine.h"
-#include "object/cube.h"
 #include "input/input_mapper.h"
 #include "object/light_object.h"
 #include "utilities/happly.h"
+#include "rendering/model_drawer.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -11,22 +12,21 @@
 int main(int argc, char* argv[]) {
     EngineInit(&argc, argv);
 
-    Cube* ironCube = new Cube();
-    ironCube->SetGlobalPosition(glm::vec3(2.0f, -1.0f, -5.0f));
-    ironCube->SetGlobalScale(glm::vec3(3.0f));
-    ironCube->SetDrawer(new ModelDrawer());
-   GetScene()->AddChild(ironCube);
+    Object* man = new Object();
+    man->SetGlobalPosition(glm::vec3(2.0f, -1.0f, -5.0f));
+    man->SetGlobalScale(glm::vec3(0.3f));
+    man->SetDrawer(new ModelDrawer("model/human.ply"));
+    GetScene()->AddChild(man);
 
-    Cube* wierdCube = new Cube();
-    wierdCube->SetGlobalPosition(glm::vec3(-2.5f, -1.0f, -5.0f));
-    wierdCube->SetGlobalScale(glm::vec3(3.0f));
-    wierdCube->SetDrawer(new ModelDrawer("textures/wierd.png"));
-    GetScene()->AddChild(wierdCube);
+    Object* cm = new Object();
+    cm->SetGlobalPosition(glm::vec3(-2.0f, 1.0f, 0.0f));
+    cm->SetDrawer(new ModelDrawer("model/1m2.ply"));
+    GetScene()->AddChild(cm);
 
-    Cube* floor = new Cube();
+    Object* floor = new Object();
     floor->SetGlobalPosition(glm::vec3(1.0f, -2.0f, 0.0f));
     floor->SetGlobalScale(glm::vec3(10.0f, 1.0f, 10.0f));
-    floor->SetDrawer(new ModelDrawer("textures/grass.png"));
+    floor->SetDrawer(new ModelDrawer("model/cube.ply", "textures/grass.png"));
     GetScene()->AddChild(floor);
 
     LightObject* lightSrc = dynamic_cast<LightObject*>(GetScene()->GetLightSource());

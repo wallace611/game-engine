@@ -3,91 +3,137 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "shader_loader.h"
 #include "utilities/stb_image.h"
+#include "utilities/happly.h"
 
 #include <iostream>
 
-void ModelDrawer::SetupCube() {
-    // 36 vertices for a cube (6 faces * 2 triangles * 3 vertices)
-    // Format: Position(XYZ), Normal(XYZ), Color(RGB), TexCoord(UV)
-    // Total: 11 floats per vertex
-    float vertices[] = {
-        // Back face (Normal: 0, 0, -1)
-        -0.5f, -0.5f, -0.5f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 
-         0.5f, -0.5f, -0.5f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-         0.5f,  0.5f, -0.5f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
-         0.5f,  0.5f, -0.5f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
-        -0.5f,  0.5f, -0.5f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-        -0.5f, -0.5f, -0.5f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 
-        
-        // Front face (Normal: 0, 0, 1)
-        -0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 
-         0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-         0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
-         0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
-        -0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-        -0.5f, -0.5f,  0.5f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 
-        
-        // Left face (Normal: -1, 0, 0)
-        -0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
-        -0.5f,  0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-        -0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 
-        -0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 
-        -0.5f, -0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-        -0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
-        
-        // Right face (Normal: 1, 0, 0)
-         0.5f,  0.5f,  0.5f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-         0.5f, -0.5f, -0.5f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-         0.5f,  0.5f, -0.5f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f,         
-         0.5f, -0.5f, -0.5f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-         0.5f,  0.5f,  0.5f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-         0.5f, -0.5f,  0.5f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f,     
-        
-        // Bottom face (Normal: 0, -1, 0)
-        -0.5f, -0.5f, -0.5f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-         0.5f, -0.5f, -0.5f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
-         0.5f, -0.5f,  0.5f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-         0.5f, -0.5f,  0.5f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-        -0.5f, -0.5f,  0.5f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 
-        -0.5f, -0.5f, -0.5f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-        
-        // Top face (Normal: 0, 1, 0)
-        -0.5f,  0.5f, -0.5f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-         0.5f,  0.5f,  0.5f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-         0.5f,  0.5f, -0.5f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f,     
-         0.5f,  0.5f,  0.5f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 
-        -0.5f,  0.5f, -0.5f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
-        -0.5f,  0.5f,  0.5f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f  
-    };
+void ModelDrawer::LoadModel(const std::string &model_path) {
+    happly::PLYData plyIn(model_path);
+    happly::Element& vertexElement = plyIn.getElement("vertex");
+    
+    std::vector<std::array<double, 3>> vPos = plyIn.getVertexPositions();
+    size_t vertexCount = vPos.size();
 
-    verticesCount = 36;
+    // Check if the file contains normal vectors
+    bool hasNormal = vertexElement.hasProperty("nx") &&
+        vertexElement.hasProperty("ny") &&
+        vertexElement.hasProperty("nz");
+
+    bool hasColor = vertexElement.hasProperty("red") &&
+        vertexElement.hasProperty("green") &&
+        vertexElement.hasProperty("blue") &&
+        vertexElement.hasProperty("alpha");
+    
+    
+    bool hasTexture = vertexElement.hasProperty("s") && vertexElement.hasProperty("t");
+
+    std::vector<double> vNx, vNy, vNz, vTexS, vTexT;
+    std::vector<unsigned char> vRed, vGreen, vBlue, vAlpha;
+
+    if (hasNormal) {
+        vNx = vertexElement.getProperty<double>("nx");
+        vNy = vertexElement.getProperty<double>("ny");
+        vNz = vertexElement.getProperty<double>("nz");
+    }
+
+    if (hasColor) {
+        vRed = vertexElement.getProperty<unsigned char>("red");
+        vGreen = vertexElement.getProperty<unsigned char>("green");
+        vBlue = vertexElement.getProperty<unsigned char>("blue");
+        vAlpha = vertexElement.getProperty<unsigned char>("alpha");
+    }
+
+    if (hasTexture) {
+        vTexS = vertexElement.getProperty<double>("s");
+        vTexT = vertexElement.getProperty<double>("t");
+    }
+
+    std::vector<float> vertices;
+    for (size_t i = 0; i < vertexCount; i++) {
+        // Add position
+        vertices.push_back(static_cast<float>(vPos[i][0]));
+        vertices.push_back(static_cast<float>(vPos[i][1]));
+        vertices.push_back(static_cast<float>(vPos[i][2]));
+
+        // Add normal
+        if (hasNormal) {
+            vertices.push_back(static_cast<float>(vNx[i]));
+            vertices.push_back(static_cast<float>(vNy[i]));
+            vertices.push_back(static_cast<float>(vNz[i]));
+        }
+        else {
+            vertices.push_back(0.0f);
+            vertices.push_back(1.0f);
+            vertices.push_back(0.0f);
+        }
+
+        // Add color
+        if (hasColor) {
+            vertices.push_back(static_cast<float>(vRed[i]) / 256.0f);
+            vertices.push_back(static_cast<float>(vGreen[i]) / 256.0f);
+            vertices.push_back(static_cast<float>(vBlue[i]) / 256.0f);
+        }
+        else {
+            vertices.push_back(1.0f);
+            vertices.push_back(1.0f);
+            vertices.push_back(1.0f);
+        }
+
+        // Add texture coord
+        if (hasTexture) {
+            vertices.push_back(static_cast<float>(vTexS[i]));
+            vertices.push_back(static_cast<float>(vTexT[i]));
+        }
+        else {
+            vertices.push_back(0.0f);
+            vertices.push_back(0.0f);
+        }
+    }
+
+    std::vector<std::vector<size_t>> fInd = plyIn.getFaceIndices<size_t>();
+    std::vector<unsigned int> indices;
+
+    for (const auto& face : fInd) {
+        if (face.size() >= 3) {
+            indices.push_back(static_cast<unsigned int>(face[0]));
+            indices.push_back(static_cast<unsigned int>(face[1]));
+            indices.push_back(static_cast<unsigned int>(face[2]));
+
+            if (face.size() == 4) {
+                indices.push_back(static_cast<unsigned int>(face[0]));
+                indices.push_back(static_cast<unsigned int>(face[2]));
+                indices.push_back(static_cast<unsigned int>(face[3]));
+            }
+        }
+    }
+
+    indicesCount = indices.size();
     size_t stride = 11 * sizeof(float);
 
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
-    // Location 0: Position (XYZ)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*) 0);
     glEnableVertexAttribArray(0);
-    
-    // Location 1: Normal (XYZ)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // Location 2: Color (RGB)
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    // Location 3: TexCoord (UV)
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, stride, (void*)(9 * sizeof(float)));
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, stride, (void*) (9 * sizeof(float)));
     glEnableVertexAttribArray(3);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-    glBindVertexArray(0); 
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ModelDrawer::LoadTexture(const std::string &texture_path) {
@@ -122,11 +168,11 @@ void ModelDrawer::LoadTexture(const std::string &texture_path) {
     stbi_image_free(data);
 }
 
-ModelDrawer::ModelDrawer() : ModelDrawer("") {}
+ModelDrawer::ModelDrawer(const std::string& model_path) : ModelDrawer(model_path, "") {}
 
-ModelDrawer::ModelDrawer(const std::string &texture_path) {
+ModelDrawer::ModelDrawer(const std::string &model_path, const std::string &texture_path) {
     program = LoadShader("shader/default_shader");
-    SetupCube();
+    LoadModel(model_path);
     if (!texture_path.empty()) LoadTexture(texture_path);
     else texture = 0;
 }
@@ -138,7 +184,8 @@ void ModelDrawer::Draw() {
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, verticesCount);
+
+    glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
     glUseProgram(0);

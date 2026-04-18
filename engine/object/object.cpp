@@ -151,7 +151,12 @@ glm::mat4 Object::GetGlobalMatrix() const {
     return globalTransform;
 }
 
-void Object::AddChild(Object *child) {
+void Object::SetTickFunction(std::function<void(Object *, float)> tickFunc){
+    tickFunction = tickFunc;
+}
+
+void Object::AddChild(Object *child)
+{
     children.push_back(child);
     child->parent = this;
     // Force the child to recalculate its global matrix based on its new parent
@@ -159,7 +164,7 @@ void Object::AddChild(Object *child) {
     child->Ready();
 }
 
-ModelDrawer *Object::GetDrawer() { return renderer; }
+ModelDrawer *Object::GetDrawer() const { return renderer; }
 void Object::SetDrawer(ModelDrawer *drawer) { renderer = drawer; }
 
 void Object::Ready() {}
@@ -168,6 +173,8 @@ void Object::Update(float deltatime) {
     for (Object* child : children) {
         child->Update(deltatime);
     }
+
+    if (tickFunction) tickFunction(this, deltatime);
 }
 
 void Object::Render() {
