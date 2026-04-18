@@ -171,27 +171,15 @@ void Object::Update(float deltatime) {
 }
 
 void Object::Render() {
-    // 1. Push Matrix
     glPushMatrix();
     
-    // 2. Apply this object's GLOBAL transform directly
-    // Because we calculate globalTransform manually, we don't rely on OpenGL's stack 
-    // to accumulate matrices for us. We just set it.
-    // (Note: glLoadMatrixf REPLACES the current matrix, but glMultMatrixf multiplies.
-    // Since we computed the absolute global matrix, we should load it. Assuming the stack 
-    // top was Identity or View Matrix, we multiply it onto the camera's view matrix).
-    glMultMatrixf(glm::value_ptr(globalTransform));
+    glMultMatrixf(glm::value_ptr(localTransform));
 
-    // 3. Render own geometry
     if (renderer) renderer->Draw(); // Pass matrices to shader if needed
-
-    // 4. Render children 
-    // Wait, since children use their OWN global transforms, they shouldn't be 
-    // multiplied on top of the parent's matrix inside OpenGL's state machine.
-    // We must pop the matrix BEFORE rendering children so they start from the View Matrix again!
-    glPopMatrix();
 
     for (Object* child : children) {
         child->Render();
     }
+
+    glPopMatrix();
 }

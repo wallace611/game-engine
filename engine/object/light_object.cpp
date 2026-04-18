@@ -3,7 +3,7 @@
 LightObject::LightObject() {
 }
 
-glm::vec3 LightObject::GetLightColor()
+glm::vec3 LightObject::GetLightColor() const
 {
     return lightColor;
 }

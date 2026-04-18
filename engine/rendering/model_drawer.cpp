@@ -122,17 +122,19 @@ void ModelDrawer::LoadTexture(const std::string &texture_path) {
     stbi_image_free(data);
 }
 
-ModelDrawer::ModelDrawer(const std::string& texture_path) : ModelDrawer("shader/shader", texture_path) {}
+ModelDrawer::ModelDrawer() : ModelDrawer("") {}
 
-ModelDrawer::ModelDrawer(const std::string &shader_path, const std::string &texture_path) {
-    program = LoadShader(shader_path);
+ModelDrawer::ModelDrawer(const std::string &texture_path) {
+    program = LoadShader("shader/default_shader");
     SetupCube();
-    LoadTexture(texture_path);
+    if (!texture_path.empty()) LoadTexture(texture_path);
+    else texture = 0;
 }
 
 void ModelDrawer::Draw() {
     glUseProgram(program);
 
+    glUniform1i(glGetUniformLocation(program, "hasTexture"), texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBindVertexArray(vao);
@@ -140,4 +142,5 @@ void ModelDrawer::Draw() {
 
     glBindVertexArray(0);
     glUseProgram(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

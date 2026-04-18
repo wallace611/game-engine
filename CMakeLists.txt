@@ -3,6 +3,10 @@ project(OpenGL_Env_Test)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
+
 find_package(OpenGL REQUIRED)
 
 find_package(glad CONFIG REQUIRED)
@@ -28,8 +32,6 @@ add_executable(main
     engine/rendering/model_drawer.cpp
 
     code/object/cube.cpp
-
-    code/rendering/skybox_drawer.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)
@@ -40,12 +42,11 @@ if(WIN32)
 endif()
 
 
-# Check if the 'shader' directory exists in the source folder
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/shader")
     add_custom_target(CopyShaders ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/shader"
-        "${CMAKE_CURRENT_BINARY_DIR}/shader"
+        "${CMAKE_BINARY_DIR}/bin/shader"
         COMMENT "Forcing shader directory copy on every build..."
     )
 
@@ -57,9 +58,20 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/textures")
     add_custom_target(CopyTextures ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/textures"
-        "${CMAKE_CURRENT_BINARY_DIR}/textures"
+        "${CMAKE_BINARY_DIR}/bin/textures"
         COMMENT "Forcing texture directory copy on every build..."
     )
 
     add_dependencies(main CopyTextures)
+endif()
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/model")
+    add_custom_target(CopyModels ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/model"
+        "${CMAKE_BINARY_DIR}/bin/model"
+        COMMENT "Forcing model directory copy on every build..."
+    )
+
+    add_dependencies(main CopyModels)
 endif()

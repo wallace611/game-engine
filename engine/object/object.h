@@ -28,31 +28,31 @@ public:
     virtual ~Object();
 
     // --- Local Getters ---
-    glm::vec3 GetLocalPosition() const;
-    glm::quat GetLocalRotationQuat() const;
-    glm::vec3 GetLocalRotationEuler() const; // Returns degrees
-    glm::vec3 GetLocalScale() const;
+    virtual glm::vec3 GetLocalPosition() const;
+    virtual glm::quat GetLocalRotationQuat() const;
+    virtual glm::vec3 GetLocalRotationEuler() const; // Returns degrees
+    virtual glm::vec3 GetLocalScale() const;
 
     // --- Local Setters ---
-    void SetLocalPosition(const glm::vec3& pos);
-    void SetLocalRotation(const glm::quat& rot);
-    void SetLocalRotation(const glm::vec3& eulerDegrees);
-    void SetLocalScale(const glm::vec3& scale);
+    virtual void SetLocalPosition(const glm::vec3& pos);
+    virtual void SetLocalRotation(const glm::quat& rot);
+    virtual void SetLocalRotation(const glm::vec3& eulerDegrees);
+    virtual void SetLocalScale(const glm::vec3& scale);
 
     // --- Global Getters ---
-    glm::vec3 GetGlobalPosition() const;
-    glm::quat GetGlobalRotationQuat() const;
-    glm::vec3 GetGlobalRotationEuler() const; // Returns degrees
-    glm::vec3 GetGlobalScale() const;
+    virtual glm::vec3 GetGlobalPosition() const;
+    virtual glm::quat GetGlobalRotationQuat() const;
+    virtual glm::vec3 GetGlobalRotationEuler() const; // Returns degrees
+    virtual glm::vec3 GetGlobalScale() const;
 
     // --- Global Setters ---
-    void SetGlobalPosition(const glm::vec3& pos);
-    void SetGlobalRotation(const glm::quat& rot);
-    void SetGlobalRotation(const glm::vec3& eulerDegrees);
-    void SetGlobalScale(const glm::vec3& scale);
+    virtual void SetGlobalPosition(const glm::vec3& pos);
+    virtual void SetGlobalRotation(const glm::quat& rot);
+    virtual void SetGlobalRotation(const glm::vec3& eulerDegrees);
+    virtual void SetGlobalScale(const glm::vec3& scale);
 
     // --- Engine Hierarchy & Rendering ---
-    glm::mat4 GetGlobalMatrix() const;
+    virtual glm::mat4 GetGlobalMatrix() const;
     
     void AddChild(Object* child);
     ModelDrawer* GetDrawer();

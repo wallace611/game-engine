@@ -10,9 +10,9 @@ private:
     Object* lightSource;
 public:
     Scene();
-    void Ready();
-    void Update(float deltatime);
-    void Render();
+    virtual void Ready() override;
+    virtual void Update(float deltatime) override;
+    virtual void Render() override;
 
     Camera* GetCamera();
     Object* GetLightSource();

@@ -53,7 +53,6 @@ public:
 
     // --- Engine Loop ---
     virtual void Ready() override;
-    // Applies all pending inputs using deltatime, then clears them
     virtual void Update(float deltatime) override;
     virtual void Render() override;
 };

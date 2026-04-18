@@ -8,6 +8,6 @@ private:
 
 public:
     LightObject();
-    glm::vec3 GetLightColor();
+    glm::vec3 GetLightColor() const;
     void SetLightColor(const glm::vec3& color);
 };

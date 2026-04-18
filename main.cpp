@@ -1,29 +1,20 @@
 #include "engine.h"
 #include "object/cube.h"
+#include "input/input_mapper.h"
+#include "object/light_object.h"
+#include "utilities/happly.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-#include "rendering/skybox_drawer.h"
-#include "input/input_mapper.h"
-#include "object/light_object.h"
-
 int main(int argc, char* argv[]) {
     EngineInit(&argc, argv);
-
-    Cube* skybox = new Cube();
-    skybox->SetGlobalPosition(glm::vec3(0.0f, 0.0f, -5.0f));
-    skybox->SetGlobalScale(glm::vec3(1.0f, 2.0f, 1.0f));
-    skybox->SetDrawer(new SkyboxDrawer("textures/skybox.png"));
-    GetScene()->AddChild(skybox);
-
-    GLuint envMapTexture = dynamic_cast<SkyboxDrawer*>(skybox->GetDrawer())->GetTextureID();
 
     Cube* ironCube = new Cube();
     ironCube->SetGlobalPosition(glm::vec3(2.0f, -1.0f, -5.0f));
     ironCube->SetGlobalScale(glm::vec3(3.0f));
-    ironCube->SetDrawer(new ModelDrawer("textures/iron.png"));
+    ironCube->SetDrawer(new ModelDrawer());
    GetScene()->AddChild(ironCube);
 
     Cube* wierdCube = new Cube();

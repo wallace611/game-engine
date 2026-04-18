@@ -26,7 +26,6 @@ void EngineInit(int* argc, char** argv) {
 
     // Initialize objects
     scene = new Scene();
-    // objDebug = newDebugText();
 
     // Initialize GLUT
     glutInit(argc, argv);
@@ -87,18 +86,9 @@ void Tick(float deltatime) {
         "frame rate: %3.1f, deltatime: %7.4f, timer: %7.2f\n",
         GetCurrentFPS(), deltatime, GetTimer()
     );
-    // dbtPushChars(objDebug, tmp);
 
     if (!is_paused) {
         scene->Update(deltatime);
-        // Manage mouse warping logic
-        // if (allowMouseMotion) {
-        //     glutWarpPointer(mouse_center_x, mouse_center_y);
-        //     allowMouseMotion = false;
-        //     warp_time = timer;
-        // } else if (timer - warp_time > deltatime) {
-        //     allowMouseMotion = true;
-        // }
 
     }
 
