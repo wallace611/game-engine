@@ -3,6 +3,8 @@
 #include "input/input_mapper.h"
 #include "utilities/happly.h"
 #include "rendering/model_drawer.h"
+#include "object/collision/aabb.h"
+#include "object/collision/sphere.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -22,6 +24,17 @@ int main(int argc, char* argv[]) {
     cm->SetGlobalPosition(glm::vec3(-2.0f, 1.0f, 0.0f));
     cm->SetDrawer(new ModelDrawer("model/1m2.ply"));
     GetScene()->AddChild(cm);
+
+    AABBCollider* aabb = new AABBCollider(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+    aabb->SetGlobalPosition(glm::vec3(-3.0f, 2.0f, 0.0f));
+    aabb->SetDebugMode(true);
+    GetScene()->AddChild(aabb);
+
+    SphereCollider* sphere = new SphereCollider(glm::vec3(0.0f), 1.0f);
+    sphere->SetGlobalPosition(glm::vec3(-2.0f, 2.0f, 0.0f));
+    sphere->SetDebugMode(true);
+    GetScene()->AddChild(sphere);
+
 
     Object* car = new Object();
     car->SetGlobalPosition(glm::vec3(1.0f, -1.0, 1.0f));

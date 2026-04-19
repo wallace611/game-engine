@@ -26,13 +26,13 @@ add_executable(main
     engine/object/object.cpp
     engine/object/camera.cpp
     engine/object/scene_object.cpp
-
     engine/object/collision/collider.cpp
     engine/object/collision/aabb.cpp
     engine/object/collision/sphere.cpp
 
     engine/rendering/shader_loader.cpp
     engine/rendering/model_drawer.cpp
+    engine/rendering/drawer/collider_drawer.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)

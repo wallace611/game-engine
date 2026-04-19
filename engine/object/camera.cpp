@@ -115,6 +115,8 @@ void Camera::Update(float deltatime) {
         // Reset movement input
         pendingMoveDirection = glm::vec3(0.0f);
     }
+
+    Object::Update(deltatime);
 }
 
 void Camera::Render() {

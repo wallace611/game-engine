@@ -13,9 +13,11 @@ protected:
     GLuint program;
     unsigned int verticesCount;
 
-    void SetupCube();
     void LoadModel(const std::string& model_path);
     void LoadTexture(const std::string& texture_path);
+
+    // For subclass
+    ModelDrawer();
 
 public:
     ModelDrawer(const std::string& model_path);

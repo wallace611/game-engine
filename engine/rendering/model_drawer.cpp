@@ -168,6 +168,8 @@ void ModelDrawer::LoadTexture(const std::string &texture_path) {
     stbi_image_free(data);
 }
 
+ModelDrawer::ModelDrawer() {}
+
 ModelDrawer::ModelDrawer(const std::string& model_path) : ModelDrawer(model_path, "") {}
 
 ModelDrawer::ModelDrawer(const std::string &model_path, const std::string &texture_path) {
