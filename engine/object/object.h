@@ -58,7 +58,7 @@ public:
     virtual glm::mat4 GetGlobalMatrix() const;
 
     void SetTickFunction(std::function<void(Object*, float)> tickFunc);
-    void AddChild(Object* child);
+    virtual void AddChild(Object* child);
     ModelDrawer* GetDrawer() const;
     void SetDrawer(ModelDrawer* drawer);
 

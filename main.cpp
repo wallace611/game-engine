@@ -28,6 +28,12 @@ int main(int argc, char* argv[]) {
     AABBCollider* aabb = new AABBCollider(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
     aabb->SetGlobalPosition(glm::vec3(-3.0f, 2.0f, 0.0f));
     aabb->SetDebugMode(true);
+    aabb->SetTickFunction([](Object* self, float deltatime) {
+        static float timeElapsed = 0.0f;
+        timeElapsed += deltatime;
+
+        self->SetGlobalPosition(glm::vec3(-3.0f, 2.0f + sin(timeElapsed) * 0.5f, 0.0f)); 
+    });
     GetScene()->AddChild(aabb);
 
     SphereCollider* sphere = new SphereCollider(glm::vec3(0.0f), 1.0f);

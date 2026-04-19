@@ -1,6 +1,9 @@
 #include "scene_object.h"
 
 #include <GL/glut.h>
+#include <iostream>
+
+#include "object/collision/collider.h"
 
 Scene::Scene() : Object() {
     renderCamera = new Camera();
@@ -14,6 +17,24 @@ void Scene::Update(float deltatime) {
     Object::Update(deltatime);
 }
 
+void Scene::CollisionCheck() {
+    // Check collisions between all pairs of colliders in the scene
+    for (size_t i = 0; i < colliders.size(); ++i) {
+        for (size_t j = i + 1; j < colliders.size(); ++j) {
+            HitResult hitResult;
+            if (colliders[i]->CollideWith(colliders[j], hitResult)) {
+                // Handle collision response here if needed
+                // For now, we just print the collision info
+                std::cout << "Collision detected between Collider " << i << " and Collider " << j << std::endl;
+                std::cout << "Hit Point: (" << hitResult.hitPoint.x << ", " << hitResult.hitPoint.y << ", " << hitResult.hitPoint.z << ")" << std::endl;
+                std::cout << "Hit Normal: (" << hitResult.hitNormal.x << ", " << hitResult.hitNormal.y << ", " << hitResult.hitNormal.z << ")" << std::endl;
+                std::cout << "Penetration Depth: " << hitResult.penetrationDepth << std::endl;
+                std::cout << "Hit Distance: " << hitResult.hitDistance << std::endl;
+            }
+        }
+    }
+}
+
 void Scene::Render() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -21,6 +42,16 @@ void Scene::Render() {
     renderCamera->Render();
 
     Object::Render();
+}
+
+void Scene::AddChild(Object *child) {
+    Object::AddChild(child);
+
+    // If the child is a collider, add it to the colliders list
+    Collider* colliderChild = dynamic_cast<Collider*>(child);
+    if (colliderChild) {
+        colliders.push_back(colliderChild);
+    }
 }
 
 Camera *Scene::GetCamera() {

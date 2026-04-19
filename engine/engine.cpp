@@ -89,7 +89,7 @@ void Tick(float deltatime) {
 
     if (!is_paused) {
         scene->Update(deltatime);
-
+        scene->CollisionCheck();
     }
 
     glutPostRedisplay();

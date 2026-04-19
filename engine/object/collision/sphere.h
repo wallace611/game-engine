@@ -15,10 +15,12 @@ public:
     float GetRadius() const;
     void SetCenter(const glm::vec3& center);
     void SetRadius(float radius);
+    glm::vec3 GetGlobalCenter() const;
+    float GetGlobalRadius() const;
 
-    virtual bool CollideWith(const Collider* other) const override;
-    virtual bool CollideWithAABB(const AABBCollider* aabb) const override;
-    virtual bool CollideWithSphere(const SphereCollider* sphere) const override;
+    virtual bool CollideWith(const Collider* other, HitResult& hitResult) const override;
+    virtual bool CollideWithAABB(const AABBCollider* aabb, HitResult& hitResult) const override;
+    virtual bool CollideWithSphere(const SphereCollider* sphere, HitResult& hitResult) const override;
 
     virtual void Ready() override;
     virtual void Update(float deltatime) override;
