@@ -7,6 +7,7 @@ struct HitResult {
     glm::vec3 hitNormal;
     float hitDistance;
     float penetrationDepth;
+    unsigned char hitChannel;
 };
 
 #define COLLISION_CHANNEL_ALL 0xFF
@@ -19,10 +20,13 @@ protected:
     bool isDebugMode;
     unsigned char channelMask;
 
-    std::function<void(const Collider* self, const Collider* from, const HitResult&)> hitCallback;
+    std::function<void(Collider* self, Collider* from, const HitResult&)> hitCallback;
     Collider(const glm::vec4& shapeColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), float faceAlpha = 0.1f);
 public:
-    void SetHitCallback(std::function<void(const Collider* self, const Collider* from, const HitResult&)> callback) {
+    std::function<void(Collider* self, Collider* from, const HitResult&)> GetHitCallback() const {
+        return hitCallback;
+    }
+    void SetHitCallback(std::function<void(Collider* self, Collider* from, const HitResult&)> callback) {
         this->hitCallback = callback;
     }
 

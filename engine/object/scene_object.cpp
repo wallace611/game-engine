@@ -24,12 +24,13 @@ void Scene::CollisionCheck() {
             HitResult hitResult;
             if (colliders[i]->CollideWith(colliders[j], hitResult)) {
                 // Handle collision response here if needed
-                // For now, we just print the collision info
-                std::cout << "Collision detected between Collider " << i << " and Collider " << j << std::endl;
-                std::cout << "Hit Point: (" << hitResult.hitPoint.x << ", " << hitResult.hitPoint.y << ", " << hitResult.hitPoint.z << ")" << std::endl;
-                std::cout << "Hit Normal: (" << hitResult.hitNormal.x << ", " << hitResult.hitNormal.y << ", " << hitResult.hitNormal.z << ")" << std::endl;
-                std::cout << "Penetration Depth: " << hitResult.penetrationDepth << std::endl;
-                std::cout << "Hit Distance: " << hitResult.hitDistance << std::endl;
+                if (colliders[i]->GetHitCallback()) {
+                    colliders[i]->GetHitCallback()(colliders[i], colliders[j], hitResult);
+                }
+                if (colliders[j]->GetHitCallback()) {
+                    hitResult.hitNormal = -hitResult.hitNormal; // Invert normal for the other collider's perspective
+                    colliders[j]->GetHitCallback()(colliders[j], colliders[i], hitResult);
+                }
             }
         }
     }

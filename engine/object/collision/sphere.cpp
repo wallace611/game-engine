@@ -78,6 +78,7 @@ bool SphereCollider::CollideWithSphere(const SphereCollider *sphere, HitResult &
             // The hit point is located exactly at the boundary of the 'other' sphere
             hitResult.hitPoint = otherCenter + hitResult.hitNormal * otherRadius;
         }
+        hitResult.hitChannel = this->channelMask & sphere->GetChannelMask();
         return true;
     }
     return false;

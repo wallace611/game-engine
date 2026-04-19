@@ -104,7 +104,6 @@ void DisplayFunction() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     scene->Render();
-    // objDebug->render(objDebug);
     
     glutSwapBuffers();
 }

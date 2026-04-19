@@ -25,22 +25,23 @@ int main(int argc, char* argv[]) {
     cm->SetDrawer(new ModelDrawer("model/1m2.ply"));
     GetScene()->AddChild(cm);
 
-    AABBCollider* aabb = new AABBCollider(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
-    aabb->SetGlobalPosition(glm::vec3(-3.0f, 2.0f, 0.0f));
-    aabb->SetDebugMode(true);
-    aabb->SetTickFunction([](Object* self, float deltatime) {
-        static float timeElapsed = 0.0f;
+    AABBCollider* aabb1 = new AABBCollider(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+    aabb1->SetGlobalPosition(glm::vec3(-3.0f, 3.5f, 0.0f));
+    aabb1->SetDebugMode(true);
+    aabb1->SetTickFunction([](Object* self, float deltatime) {
+        static float timeElapsed = -3.0f;
         timeElapsed += deltatime;
-
-        self->SetGlobalPosition(glm::vec3(-3.0f, 2.0f + sin(timeElapsed) * 0.5f, 0.0f)); 
+        if (timeElapsed > 0) self->SetGlobalPosition(glm::vec3(-3.0f, 3.5f + sin(timeElapsed) * 2.0f, 0.0f)); 
     });
-    GetScene()->AddChild(aabb);
+    GetScene()->AddChild(aabb1);
 
-    SphereCollider* sphere = new SphereCollider(glm::vec3(0.0f), 1.0f);
-    sphere->SetGlobalPosition(glm::vec3(-2.0f, 2.0f, 0.0f));
-    sphere->SetDebugMode(true);
-    GetScene()->AddChild(sphere);
-
+    SphereCollider* sphere1 = new SphereCollider(glm::vec3(0.0f), 0.5f);
+    sphere1->SetGlobalPosition(glm::vec3(-3.0f, 2.0f, 0.0f));
+    sphere1->SetDebugMode(true);
+    sphere1->SetHitCallback([](Collider* self, Collider* from, const HitResult& hitResult) {
+        self->SetGlobalPosition(self->GetGlobalPosition() + hitResult.hitNormal * hitResult.penetrationDepth); // Simple response: push the sphere out of collision
+    });
+    GetScene()->AddChild(sphere1);
 
     Object* car = new Object();
     car->SetGlobalPosition(glm::vec3(1.0f, -1.0, 1.0f));
@@ -80,6 +81,12 @@ int main(int argc, char* argv[]) {
     });
     InputRegisterKey('d', KEY_HOLD, [cam]() {
         cam->Move(glm::vec3(1.0f, 0.0f, 0.0f));
+    });
+    InputRegisterKey('r', KEY_HOLD, [cam]() {
+        cam->Move(glm::vec3(0.0f, 1.0f, 0.0f));
+    });
+    InputRegisterKey('f', KEY_HOLD, [cam]() {
+        cam->Move(glm::vec3(0.0f, -1.0f, 0.0f));
     });
 
     EngineStartLoop();

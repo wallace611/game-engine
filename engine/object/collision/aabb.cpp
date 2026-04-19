@@ -81,9 +81,10 @@ bool AABBCollider::CollideWithAABB(const AABBCollider *aabb, HitResult &hitResul
     hitResult.penetrationDepth = minOverlap;
     hitResult.hitNormal = normal;
     hitResult.hitDistance = 0.0f;
+    hitResult.hitChannel = this->channelMask & aabb->GetChannelMask();
 
-    glm::vec3 overlapMin = glm::max(this->minPoint, aabb->minPoint);
-    glm::vec3 overlapMax = glm::min(this->maxPoint, aabb->maxPoint);
+    glm::vec3 overlapMin = glm::max(thisMin, otherMin);
+    glm::vec3 overlapMax = glm::min(thisMax, otherMax);
     hitResult.hitPoint = (overlapMin + overlapMax) * 0.5f;
 
     return true;
@@ -135,6 +136,7 @@ bool AABBCollider::CollideWithSphere(const SphereCollider *sphere, HitResult &hi
 
             hitResult.penetrationDepth = globalRadius + minOverlap;
         }
+        hitResult.hitChannel = this->channelMask & sphere->GetChannelMask();
         return true;
     }
     return false;
