@@ -2,11 +2,8 @@
 
 #include <GL/glut.h>
 
-#include "object/light_object.h"
-
 Scene::Scene() : Object() {
     renderCamera = new Camera();
-    lightSource = new LightObject();
 }
 
 void Scene::Ready() {
@@ -28,10 +25,6 @@ void Scene::Render() {
 
 Camera *Scene::GetCamera() {
     return renderCamera;
-}
-
-Object *Scene::GetLightSource() {
-    return lightSource;
 }
 
 int Scene::SetCamera(Camera *cam) {

@@ -21,7 +21,9 @@ Object::Object()
     UpdateTransforms();
 }
 
-Object::~Object() {}
+Object::~Object() {
+    if (renderer) delete renderer;
+}
 
 // ==========================================
 // Core Matrix Update Logic
