@@ -45,8 +45,12 @@ void Scene::Render() {
     Object::Render();
 }
 
-void Scene::AddChild(Object *child) {
-    Object::AddChild(child);
+void Scene::AddChild(Object *child, Object *parent) {
+    if (!parent) parent = this; // If no parent specified, add to root of scene
+    parent->children.push_back(child);
+    child->parent = parent;
+    child->UpdateTransforms();
+    child->Ready();
 
     // If the child is a collider, add it to the colliders list
     Collider* colliderChild = dynamic_cast<Collider*>(child);

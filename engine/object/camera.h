@@ -7,8 +7,16 @@
 #define GLM_ENABLE_EXPERIMENTA
 #include <glm/gtc/quaternion.hpp>
 
+#define CAMERA_PERSPECTIVE true
+#define CAMERA_ORTHOGRAPHIC false
+
 class Camera : public Object {
 protected:
+    bool projectionMode; // true for perspective, false for orthographic
+
+    float aspectRatio;
+    float orthoSize;
+
     float fov;
     float zNear;
     float zFar;
@@ -36,6 +44,13 @@ protected:
 
 public:
     Camera();
+
+    bool GetProjectionMode() const;
+    void SetProjectionMode(bool perspective);
+    float GetAspectRatio() const;
+    void SetAspectRatio(float ratio);
+    float GetOrthoSize() const;
+    void SetOrthoSize(float size);
     
     // --- Getters ---
     glm::vec3 GetLocalPosition() const;

@@ -3,6 +3,8 @@
 #include "rendering/drawer/collider_drawer.h"
 #include "object/collision/sphere.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 AABBCollider::AABBCollider() : AABBCollider(glm::vec3(0.0f), glm::vec3(0.0f)) {}
 
 AABBCollider::AABBCollider(const glm::vec3 &minPt, const glm::vec3 &maxPt) : Collider() {

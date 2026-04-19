@@ -157,15 +157,6 @@ void Object::SetTickFunction(std::function<void(Object *, float)> tickFunc){
     tickFunction = tickFunc;
 }
 
-void Object::AddChild(Object *child)
-{
-    children.push_back(child);
-    child->parent = this;
-    // Force the child to recalculate its global matrix based on its new parent
-    child->UpdateTransforms(); 
-    child->Ready();
-}
-
 ModelDrawer *Object::GetDrawer() const { return renderer; }
 void Object::SetDrawer(ModelDrawer *drawer) { renderer = drawer; }
 

@@ -7,6 +7,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 Camera::Camera() {
+    projectionMode = CAMERA_PERSPECTIVE;
+
+    aspectRatio = 16.0f / 9.0f;
+    orthoSize = 5.0f;
+
     fov = 60.0f;
     zNear = 0.9f;
     zFar = 1000.0f;
@@ -28,6 +33,30 @@ Camera::Camera() {
 
     // Calculate initial quaternion and vectors based on default Euler angles
     SetLocalRotation(glm::vec3(currentPitch, currentYaw, 0.0f));
+}
+
+bool Camera::GetProjectionMode() const { 
+    return projectionMode; 
+}
+
+void Camera::SetProjectionMode(bool perspective) {
+    projectionMode = perspective;
+}
+
+float Camera::GetAspectRatio() const { 
+    return aspectRatio;
+}
+
+void Camera::SetAspectRatio(float ratio) {
+    aspectRatio = ratio;
+}
+
+float Camera::GetOrthoSize() const {
+    return orthoSize;
+}
+
+void Camera::SetOrthoSize(float size) {
+    orthoSize = size;
 }
 
 void Camera::UpdateCameraVectors() {
@@ -120,6 +149,20 @@ void Camera::Update(float deltatime) {
 }
 
 void Camera::Render() {
+    glMatrixMode(GL_PROJECTION);
+
+    glm::mat4 projectionMatrix;
+    if (projectionMode == CAMERA_PERSPECTIVE) {
+        projectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, zNear, zFar);
+    } else {
+        float orthoHalfWidth = orthoSize * aspectRatio * 0.5f;
+        float orthoHalfHeight = orthoSize * 0.5f;
+        projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, zNear, zFar);
+    }
+
+    glLoadMatrixf(glm::value_ptr(projectionMatrix));
+
+    glMatrixMode(GL_MODELVIEW);
     glm::vec3 targetPoint = localPosition + camFront;
     glm::mat4 viewMatrix = glm::lookAt(localPosition, targetPoint, camUp);
     glMultMatrixf(glm::value_ptr(viewMatrix));

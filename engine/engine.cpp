@@ -146,14 +146,11 @@ void ReshapeFunction(int w, int h) {
 
     double aspectRatio = (double)w / (double)h;
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    
-    // Placeholder to make it compile without World object
-    gluPerspective(60.0, aspectRatio, 0.1, 1000.0);
-
     glViewport(0, 0, w, h);
-    glMatrixMode(GL_MODELVIEW);
+
+    if (scene && scene->GetCamera()) {
+        scene->GetCamera()->SetAspectRatio(aspectRatio);
+    }
 }
 
 void PauseGame() {

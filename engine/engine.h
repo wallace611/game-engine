@@ -44,5 +44,4 @@ Scene* GetScene();
 static void DisplayFunction();
 static void IdleFunction();
 static void ReshapeFunction(int w, int h);
-static void KeyboardFunction(unsigned char key, int x, int y);
 void PauseGame();

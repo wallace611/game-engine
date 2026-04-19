@@ -25,7 +25,8 @@ protected:
 
     // Helper function to recalculate matrices when TRS changes
     void UpdateTransforms();
-
+    
+    friend class Scene; // Allow Scene to access protected members for hierarchy management
 public:
     Object();
     virtual ~Object();
@@ -58,7 +59,6 @@ public:
     virtual glm::mat4 GetGlobalMatrix() const;
 
     void SetTickFunction(std::function<void(Object*, float)> tickFunc);
-    virtual void AddChild(Object* child);
     ModelDrawer* GetDrawer() const;
     void SetDrawer(ModelDrawer* drawer);
 

@@ -18,6 +18,11 @@ public:
     glm::vec3 GetGlobalMinPoint() const;
     glm::vec3 GetGlobalMaxPoint() const;
 
+    virtual void SetLocalRotation(const glm::quat& rot) override {}
+    virtual void SetLocalRotation(const glm::vec3& eulerDegrees) override {}
+    virtual void SetGlobalRotation(const glm::quat& rot) override {}
+    virtual void SetGlobalRotation(const glm::vec3& eulerDegrees) override {}
+
     virtual bool CollideWith(const Collider* other, HitResult& hitResult) const override;
     virtual bool CollideWithAABB(const AABBCollider* aabb, HitResult& hitResult) const override;
     virtual bool CollideWithSphere(const SphereCollider* sphere, HitResult& hitResult) const override;

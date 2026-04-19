@@ -17,7 +17,7 @@ public:
     void CollisionCheck();
     virtual void Render() override;
 
-    virtual void AddChild(Object* child) override;
+    void AddChild(Object* child, Object* parent = nullptr);
 
     Camera* GetCamera();
     int SetCamera(Camera* cam);

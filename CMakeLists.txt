@@ -33,6 +33,9 @@ add_executable(main
     engine/rendering/shader_loader.cpp
     engine/rendering/model_drawer.cpp
     engine/rendering/drawer/collider_drawer.cpp
+
+    code/scene_initializing.cpp
+    code/object/ball.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)
