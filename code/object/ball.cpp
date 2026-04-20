@@ -6,10 +6,10 @@
 
 Ball::Ball() : Ball(glm::ballRand(9.0f) + glm::vec3(0.0f, 15.0f, 0.0f), glm::ballRand(5.0f)) {}
 
-Ball::Ball(glm::vec3 &initialPosition, glm::vec3 &initialVelocity) : Object() {
+Ball::Ball(glm::vec3 &initialPosition, glm::vec3 &initialVelocity) : Object(), ColorInterface(glm::vec3(0.3)) {
     this->SetGlobalPosition(initialPosition);
     this->velocity = initialVelocity;
-    PhongDrawer* drawer = new PhongDrawer("model/sphere.ply");
+    PhongDrawer* drawer = new PhongDrawer("model/sphere.ply", this);
     drawer->EnableCustomColor(true);
     drawer->SetCustomColor(glm::vec3(0.3f));
     this->SetDrawer(drawer);
@@ -38,6 +38,18 @@ void Ball::CollisionCallback(Collider *from, const HitResult &hitResult) {
     glm::vec3 correction = hitResult.hitNormal * (hitResult.penetrationDepth * 0.5f);
     this->SetGlobalPosition(this->GetGlobalPosition() + correction);
 
-    const float restitution = 0.8f; // 1.0 = 完全彈性，0.0 = 完全非彈性
+    const float restitution = 0.8f; 
     this->velocity = glm::reflect(this->velocity, hitResult.hitNormal) * restitution;
+
+    Object* parentFrom = from->GetParent();
+    if (parentFrom != nullptr) {
+        ColorInterface* iColor = dynamic_cast<ColorInterface*>(parentFrom);
+        if (iColor != nullptr && this->GetDrawer() != nullptr) {
+            PhongDrawer* drawer = dynamic_cast<PhongDrawer*>(this->GetDrawer());
+            if (drawer != nullptr) {
+                drawer->EnableCustomColor(true);
+                drawer->SetCustomColor(iColor->GetBaseColor());
+            }
+        }
+    }
 }

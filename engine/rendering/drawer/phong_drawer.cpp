@@ -1,23 +1,29 @@
 #include "phong_drawer.h"
 #include <iostream>
 
-PhongDrawer::PhongDrawer(const std::string& model_path)
-    : PhongDrawer(model_path, "") {}
+#include "engine.h"
 
-PhongDrawer::PhongDrawer(const std::string& model_path, const std::string& texture_path)
+PhongDrawer::PhongDrawer(const std::string& model_path, Object* parent)
+    : PhongDrawer(model_path, "", parent) {}
+
+PhongDrawer::PhongDrawer(const std::string& model_path, const std::string& texture_path, Object* parent)
     : ModelDrawer(model_path, texture_path, "shader/phong_shader"),
-      lightPosWorld(0.0f, 0.0f, 0.0f), lightColor(1.0f, 1.0f, 1.0f),
-      constant(1.0f), linear(0.09f), quadratic(0.032f),
-      useCustomColor(false), customColor(1.0f, 1.0f, 1.0f) 
+      lightColor(1.0f, 1.0f, 1.0f),
+      constant(1.0f), linear(0.027f), quadratic(0.0028f),
+      useCustomColor(false), customColor(1.0f, 1.0f, 1.0f)
 {
+    this->parent = parent;
 }
 
 void PhongDrawer::Draw() {
     glUseProgram(program);
 
     // Pass light properties
-    glUniform3fv(glGetUniformLocation(program, "lightPosWorld"), 1, glm::value_ptr(lightPosWorld));
+    glUniform3fv(glGetUniformLocation(program, "lightPosWorld"), 1, glm::value_ptr(GetScene()->GetLight()->GetGlobalPosition()));
     glUniform3fv(glGetUniformLocation(program, "lightColor"), 1, glm::value_ptr(lightColor));
+    glUniform3fv(glGetUniformLocation(program, "viewPosWorld"), 1, glm::value_ptr(GetScene()->GetCamera()->GetGlobalPosition()));
+
+    glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(parent->GetGlobalMatrix()));
 
     // Pass attenuation parameters
     glUniform1f(glGetUniformLocation(program, "constant"), constant);
@@ -49,13 +55,6 @@ void PhongDrawer::Draw() {
     // Cleanup states
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void PhongDrawer::SetLightWorldSpace(const glm::vec3& worldPos, const glm::mat4& viewMatrix, const glm::vec3& color) {
-    // Transform the light's world position into view space for the shader
-    glm::vec4 viewSpacePos = viewMatrix * glm::vec4(worldPos, 1.0f);
-    lightPosWorld = glm::vec3(viewSpacePos);
-    lightColor = color;
 }
 
 void PhongDrawer::SetAttenuation(float c, float l, float q) {

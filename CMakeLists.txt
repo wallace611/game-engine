@@ -38,6 +38,7 @@ add_executable(main
     code/scene_initializing.cpp
     code/object/wall.cpp
     code/object/ball.cpp
+    code/interface/color_interface.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)

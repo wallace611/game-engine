@@ -7,6 +7,8 @@
 
 Scene::Scene() : Object() {
     renderCamera = new Camera();
+    light = new Object();
+    light->SetGlobalPosition(glm::vec3(0.0f, 22.0f, 0.0f));
 }
 
 void Scene::Ready() {

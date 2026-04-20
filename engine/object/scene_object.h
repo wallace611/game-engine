@@ -10,6 +10,7 @@ private:
     Camera* renderCamera;
 
     std::vector<Collider*> colliders;
+    Object* light;
 public:
     Scene();
     virtual void Ready() override;
@@ -19,6 +20,7 @@ public:
 
     void AddChild(Object* child, Object* parent = nullptr);
 
+    Object* GetLight() { return light; }
     Camera* GetCamera();
     int SetCamera(Camera* cam);
 };

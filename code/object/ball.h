@@ -2,8 +2,9 @@
 
 #include "object/object.h"
 #include "object/collision/sphere.h"
+#include "interface/color_interface.h"
 
-class Ball : public Object {
+class Ball : public Object, public ColorInterface {
 protected:
     SphereCollider* collider;
     glm::vec3 velocity;
