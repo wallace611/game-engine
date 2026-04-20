@@ -59,6 +59,8 @@ void Camera::SetOrthoSize(float size) {
     orthoSize = size;
 }
 
+glm::vec3 Camera::GetCameraFront() const { return camFront; }
+
 void Camera::UpdateCameraVectors() {
     // 1. Define the world's default forward and up vectors
     glm::vec3 worldForward = glm::vec3(0.0f, 0.0f, -1.0f);

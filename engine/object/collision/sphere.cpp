@@ -56,8 +56,7 @@ bool SphereCollider::CollideWithSphere(const SphereCollider *sphere, HitResult &
     glm::vec3 otherCenter = sphere->GetGlobalCenter();
     float otherRadius = sphere->GetGlobalRadius();
 
-    // Vector pointing from 'other' sphere to 'this' sphere
-    glm::vec3 diff = thisCenter - otherCenter;
+    glm::vec3 diff = otherCenter - thisCenter;
     float distance = glm::length(diff); 
     float radiusSum = thisRadius + otherRadius;
 

@@ -2,7 +2,9 @@
 #include "rendering/model_drawer.h"
 #include "object/collision/aabb.h"
 #include "object/collision/sphere.h"
+#include "object/wall.h"
 #include "object/ball.h"
+#include "input/input_mapper.h"
 
 #include <glm/gtc/random.hpp>
 
@@ -17,31 +19,20 @@ void CreateWall(const glm::vec3& position, const glm::vec3& scale, Object* paren
     GetScene()->AddChild(wallCollider, wall);
 }
 
-void CreateBall(const glm::vec3& position, float radius, Object* parent) {
-    Object* ball = new Object();
-    ball->SetGlobalPosition(position);
-    ball->SetGlobalScale(glm::vec3(radius * 2.0f)); // Scale the unit sphere to the desired radius
-    ball->SetTickFunction([](Object* self, float deltatime) {
-        // Simple gravity effect
-        static glm::vec3 velocity = glm::ballRand(10.0f); // Random initial velocity
-        self->SetGlobalPosition(self->GetGlobalPosition() + velocity * deltatime);
-    });
-    GetScene()->AddChild(ball, parent);
-    SphereCollider* ballCollider = new SphereCollider(glm::vec3(0.0f), radius, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 0.2f);
-    ballCollider->SetDebugMode(true);
-    GetScene()->AddChild(ballCollider, ball);
-}
-
 void InitScene() {
+    Camera* cam = GetScene()->GetCamera();
+    cam->SetLocalPosition(glm::vec3(0.0f, 40.0f, 15.0f));
+    cam->SetLocalRotation(glm::vec3(-60.0f, 0.0f, 0.0f));
+
     Object* root = new Object();
     GetScene()->AddChild(root);
 
-    CreateWall(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(21.0f, 1.0f, 21.0f), root);
-    CreateWall(glm::vec3(0.0f, 9.0f, -11.0f), glm::vec3(21.0f, 21.0f, 1.0f), root);
-    CreateWall(glm::vec3(0.0f, 9.0f, 11.0f), glm::vec3(21.0f, 21.0f, 1.0f), root);
-    CreateWall(glm::vec3(-11.0f, 9.0f, 0.0f), glm::vec3(1.0f, 21.0f, 21.0f), root);
-    CreateWall(glm::vec3(11.0f, 9.0f, 0.0f), glm::vec3(1.0f, 21.0f, 21.0f), root);
+    Wall* wall1 = new Wall(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(21.0f, 1.0f, 21.0f));
+    GetScene()->AddChild(wall1, root);
 
-    Ball* ball = new Ball(1.0f);
-    GetScene()->AddChild(ball, root);
+    InputRegisterKey('b', KEY_PRESS, []() {
+        Camera* cam = GetScene()->GetCamera();
+        Ball* ball = new Ball(cam->GetGlobalPosition(), cam->GetCameraFront() * 10.0f);
+        GetScene()->AddChild(ball);
+    });
 }

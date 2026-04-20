@@ -35,6 +35,7 @@ add_executable(main
     engine/rendering/drawer/collider_drawer.cpp
 
     code/scene_initializing.cpp
+    code/object/wall.cpp
     code/object/ball.cpp
 )
 

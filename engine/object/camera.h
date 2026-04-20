@@ -51,6 +51,7 @@ public:
     void SetAspectRatio(float ratio);
     float GetOrthoSize() const;
     void SetOrthoSize(float size);
+    glm::vec3 GetCameraFront() const;
     
     // --- Getters ---
     glm::vec3 GetLocalPosition() const;

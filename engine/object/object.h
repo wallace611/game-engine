@@ -58,6 +58,8 @@ public:
     // --- Engine Hierarchy & Rendering ---
     virtual glm::mat4 GetGlobalMatrix() const;
 
+    Object* GetParent() const;
+
     void SetTickFunction(std::function<void(Object*, float)> tickFunc);
     ModelDrawer* GetDrawer() const;
     void SetDrawer(ModelDrawer* drawer);

@@ -153,6 +153,8 @@ glm::mat4 Object::GetGlobalMatrix() const {
     return globalTransform;
 }
 
+Object *Object::GetParent() const { return parent; }
+
 void Object::SetTickFunction(std::function<void(Object *, float)> tickFunc){
     tickFunction = tickFunc;
 }
