@@ -18,6 +18,7 @@ protected:
 
     // For subclass
     ModelDrawer();
+    ModelDrawer(const std::string& model_path, const std::string& texture_path, const std::string& shader_path);
 
 public:
     ModelDrawer(const std::string& model_path);

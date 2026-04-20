@@ -53,7 +53,7 @@ void EngineInit(int* argc, char** argv) {
     glutDisplayFunc(DisplayFunction);
     glutIdleFunc(IdleFunction);
     glutReshapeFunc(ReshapeFunction);
-    // glutSetCursor(GLUT_CURSOR_NONE);
+    glutSetCursor(GLUT_CURSOR_NONE);
 }
 
 void EngineStartLoop() {
@@ -90,6 +90,14 @@ void Tick(float deltatime) {
     if (!is_paused) {
         scene->Update(deltatime);
         scene->CollisionCheck();
+        if (allowMouseMotion) {
+            glutWarpPointer(mouse_center_x, mouse_center_y);
+            allowMouseMotion = false;
+            warp_time = timer;
+        }
+        else if (timer - warp_time > deltatime) {
+            allowMouseMotion = true;
+        }
     }
 
     glutPostRedisplay();
@@ -154,7 +162,6 @@ void ReshapeFunction(int w, int h) {
 }
 
 void PauseGame() {
-    is_paused = !is_paused;
     allowMouseMotion = false;
 
     if (is_paused) {
@@ -163,5 +170,7 @@ void PauseGame() {
         warp_time = timer;
     } else {
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+        allowMouseMotion = false;
     }
+    is_paused = !is_paused;
 }

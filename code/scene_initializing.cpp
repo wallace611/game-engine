@@ -1,5 +1,6 @@
 #include "scene_initializing.h"
 #include "rendering/model_drawer.h"
+#include "rendering/drawer/phong_drawer.h"
 #include "object/collision/aabb.h"
 #include "object/collision/sphere.h"
 #include "object/wall.h"
@@ -7,17 +8,6 @@
 #include "input/input_mapper.h"
 
 #include <glm/gtc/random.hpp>
-
-void CreateWall(const glm::vec3& position, const glm::vec3& scale, Object* parent) {
-    Object* wall = new Object();
-    wall->SetGlobalPosition(position);
-    wall->SetGlobalScale(scale);
-    wall->SetDrawer(new ModelDrawer("model/cube.ply"));
-    GetScene()->AddChild(wall, parent);
-    AABBCollider* wallCollider = new AABBCollider(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 0.2f);
-    wallCollider->SetDebugMode(true);
-    GetScene()->AddChild(wallCollider, wall);
-}
 
 void InitScene() {
     Camera* cam = GetScene()->GetCamera();
@@ -27,12 +17,28 @@ void InitScene() {
     Object* root = new Object();
     GetScene()->AddChild(root);
 
-    Wall* wall1 = new Wall(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(21.0f, 1.0f, 21.0f));
+    Wall* floor = new Wall(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(21.0f, 1.0f, 21.0f));
+    GetScene()->AddChild(floor, root);
+
+    Wall* wall1 = new Wall(glm::vec3(0.0f, 9.0f, 11.0f), glm::vec3(21.0f, 21.0f, 1.0f));
     GetScene()->AddChild(wall1, root);
 
-    InputRegisterKey('b', KEY_PRESS, []() {
-        Camera* cam = GetScene()->GetCamera();
-        Ball* ball = new Ball(cam->GetGlobalPosition(), cam->GetCameraFront() * 10.0f);
-        GetScene()->AddChild(ball);
-    });
+    Wall* wall2 = new Wall(glm::vec3(0.0f, 9.0f, -11.0f), glm::vec3(21.0f, 21.0f, 1.0f));
+    GetScene()->AddChild(wall2, root);
+
+    Wall* wall3 = new Wall(glm::vec3(11.0f, 9.0f, 0.0f), glm::vec3(1.0f, 21.0f, 21.0f));
+    GetScene()->AddChild(wall3, root);
+
+    Wall* wall4 = new Wall(glm::vec3(-11.0f, 9.0f, 0.0f), glm::vec3(1.0f, 21.0f, 21.0f));
+    GetScene()->AddChild(wall4, root);
+
+    Object* car = new Object();
+    car->SetGlobalPosition(glm::vec3(0.0f, -0.9f, 0.0f));
+    car->SetGlobalRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+    PhongDrawer* carDrawer = new PhongDrawer("model/911.ply");
+    carDrawer->EnableCustomColor(true);
+    carDrawer->SetCustomColor(glm::vec3(1.0f, 0.0f, 0.0f));
+    car->SetDrawer(carDrawer);
+    GetScene()->AddChild(car, root);
+    
 }

@@ -2,21 +2,22 @@
 
 #include "engine.h"
 #include "glm/gtc/random.hpp"
+#include "rendering/drawer/phong_drawer.h"
 
-Ball::Ball() : Object() {
-    this->SetGlobalPosition(glm::ballRand(9.0f) + glm::vec3(0.0f, 15.0f, 0.0f)); // Random initial position with an upward bias
-    this->SetGlobalScale(glm::vec3(1.0f)); // Start with unit scale, collider will define actual size
-    this->velocity = glm::ballRand(5.0f);
-}
+Ball::Ball() : Ball(glm::ballRand(9.0f) + glm::vec3(0.0f, 15.0f, 0.0f), glm::ballRand(5.0f)) {}
 
-Ball::Ball(glm::vec3 &initialPosition, glm::vec3 &initialVelocity) {
+Ball::Ball(glm::vec3 &initialPosition, glm::vec3 &initialVelocity) : Object() {
     this->SetGlobalPosition(initialPosition);
     this->velocity = initialVelocity;
+    PhongDrawer* drawer = new PhongDrawer("model/sphere.ply");
+    drawer->EnableCustomColor(true);
+    drawer->SetCustomColor(glm::vec3(0.3f));
+    this->SetDrawer(drawer);
+    this->SetGlobalScale(glm::vec3(2.0f));
 }
 
 void Ball::Ready() {
-    collider = new SphereCollider(glm::vec3(0.0f), 1.0f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 0.2f);
-    collider->SetDebugMode(true);
+    collider = new SphereCollider(glm::vec3(0.0f), 0.5f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 0.2f);
     collider->SetHitCallback([this](Collider* self, Collider* from, const HitResult& hitResult) {
         this->CollisionCallback(from, hitResult);
     });

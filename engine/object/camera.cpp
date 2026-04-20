@@ -126,8 +126,8 @@ void Camera::Update(float deltatime) {
         SetLocalRotation(glm::vec3(currentPitch, currentYaw, 0.0f));
 
         // Reset rotation inputs
-        pendingPitchDelta = 0.0f;
-        pendingYawDelta = 0.0f;
+        pendingPitchDelta *= 0.8f;
+        pendingYawDelta *= 0.8f;
     }
 
     // Check if there is any movement input this frame

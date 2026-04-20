@@ -170,14 +170,20 @@ void ModelDrawer::LoadTexture(const std::string &texture_path) {
 
 ModelDrawer::ModelDrawer() {}
 
-ModelDrawer::ModelDrawer(const std::string& model_path) : ModelDrawer(model_path, "") {}
+ModelDrawer::ModelDrawer(const std::string &model_path,
+                         const std::string &texture_path,
+                         const std::string &shader_path) {
 
-ModelDrawer::ModelDrawer(const std::string &model_path, const std::string &texture_path) {
-    program = LoadShader("shader/default_shader");
+    program = LoadShader(shader_path);
     LoadModel(model_path);
     if (!texture_path.empty()) LoadTexture(texture_path);
     else texture = 0;
 }
+
+ModelDrawer::ModelDrawer(const std::string& model_path) : ModelDrawer(model_path, "") {}
+
+ModelDrawer::ModelDrawer(const std::string &model_path, const std::string &texture_path) :
+    ModelDrawer(model_path, texture_path, "shader/default_shader") {}
 
 void ModelDrawer::Draw() {
     glUseProgram(program);

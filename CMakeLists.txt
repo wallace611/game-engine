@@ -33,6 +33,7 @@ add_executable(main
     engine/rendering/shader_loader.cpp
     engine/rendering/model_drawer.cpp
     engine/rendering/drawer/collider_drawer.cpp
+    engine/rendering/drawer/phong_drawer.cpp
 
     code/scene_initializing.cpp
     code/object/wall.cpp

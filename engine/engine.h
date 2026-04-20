@@ -20,7 +20,6 @@ extern int mouse_center_x, mouse_center_y;
 static float current_fps;
 static float current_deltatime;
 static bool is_paused;
-static bool allowMouseMotion;
 static double timer;
 static double warp_time;
 

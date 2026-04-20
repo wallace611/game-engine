@@ -3,22 +3,16 @@
 #include "input/input_mapper.h"
 #include "object/scene_object.h"
 #include "engine/engine.h"
+#include "object/ball.h"
+
+#include <iostream>
 
 void InitKeybinds() {
     Camera* cam = GetScene()->GetCamera();
 
-    InputRegisterKey('q', KEY_HOLD, [cam]() {
-        cam->Rotate(0.0f, 1.0f);
-    });
-
-    InputRegisterKey('e', KEY_HOLD, [cam]() {
-        cam->Rotate(0.0f, -1.0f);
-    });
-
     InputRegisterKey('w', KEY_HOLD, [cam]() {
         cam->Move(glm::vec3(0.0f, 0.0f, 1.0f));
     });
-
     InputRegisterKey('a', KEY_HOLD, [cam]() {
         cam->Move(glm::vec3(-1.0f, 0.0f, 0.0f));
     });
@@ -37,10 +31,15 @@ void InitKeybinds() {
     InputRegisterKey('v', KEY_PRESS, [cam]() {
         cam->SetProjectionMode(!cam->GetProjectionMode());
     });
-    InputRegisterKey('t', KEY_HOLD, [cam]() {
-        cam->Rotate(1.0f, 0.0f);
+    InputRegisterKey('p', KEY_PRESS, []() {
+        PauseGame();
     });
-    InputRegisterKey('g', KEY_HOLD, [cam]() {
-        cam->Rotate(-1.0f, 0.0f);
+    InputRegisterMouse(MOUSE_MOTION, 0, [cam](int x, int y) {
+        cam->Rotate((float) -y / 5, (float) -x / 5);
+    });
+    InputRegisterMouse(MOUSE_LEFT_BTN, KEY_PRESS, [](int x, int y) {
+        Camera* cam = GetScene()->GetCamera();
+        Ball* ball = new Ball(cam->GetGlobalPosition(), cam->GetCameraFront() * 10.0f);
+        GetScene()->AddChild(ball);
     });
 }

@@ -1,11 +1,14 @@
 #include "input_mapper.h"
 
+bool allowMouseMotion;
+
 void InputMapperInit() {
     // Bind GLUT functions to our internal static callbacks
     glutKeyboardFunc(KeyboardPressedCallback);
     glutKeyboardUpFunc(KeyboardReleaseCallback);
     glutMouseFunc(MouseActionCallback);
     glutPassiveMotionFunc(MouseMovementCallback);
+    allowMouseMotion = false;
 }
 
 void InputRegisterKey(unsigned char key, action_t action, std::function<void()> callbackFunc) {
@@ -24,7 +27,8 @@ void InputRegisterKey(unsigned char key, action_t action, std::function<void()> 
 }
 
 void InputMapperUpdate() {
-    for (int i = 0; i < 256; i++) {
+    int i;
+    for (i = 0; i < 256; i++) {
         // Skip inactive keys to save CPU cycles
         if (!inputMapper[i].isActive) continue;
 
@@ -49,6 +53,44 @@ void InputMapperUpdate() {
         // Update the last state for the next frame calculation
         keyInputLastState[i] = isPressed;
     }
+
+    for (i = 0; i < 3; i++) {
+        // Skip inactive mouse buttons to save CPU cycles
+        if (!mouseInputMapper[i].isActive) continue;
+
+        bool isPressed = mouseButtonCurrentStates[i].isPressed;
+        bool wasPressed = mouseButtonLastStates[i].isPressed;
+        int x = mouseButtonCurrentStates[i].x;
+        int y = mouseButtonCurrentStates[i].y;
+
+        // 1. Check for MOUSE_PRESS (Triggered exactly once when the button goes down)
+        if (isPressed && !wasPressed && mouseInputMapper[i].onPress) {
+            mouseInputMapper[i].onPress(x, y);
+        }
+
+        // 2. Check for MOUSE_RELEASE (Triggered exactly once when the button comes up)
+        if (!isPressed && wasPressed && mouseInputMapper[i].onRelease) {
+            mouseInputMapper[i].onRelease(x, y);
+        }
+
+        // 3. Check for MOUSE_HOLD (Triggered continuously every frame while held)
+        if (isPressed && mouseInputMapper[i].onHold) {
+            mouseInputMapper[i].onHold(x, y);
+        }
+
+        // Update the last state for the next frame calculation
+        mouseButtonLastStates[i] = mouseButtonCurrentStates[i];
+    }
+    i = MOUSE_MOTION;
+    if (mouseInputMapper[i].isActive) {
+        if (allowMouseMotion) {
+            int x = mouseButtonCurrentStates[i].x - mouseButtonLastStates[i].x;
+            int y = mouseButtonCurrentStates[i].y - mouseButtonLastStates[i].y;
+
+            mouseInputMapper[i].onHold(x, y);
+        }
+        mouseButtonLastStates[i] = mouseButtonCurrentStates[i];
+    }
 }
 
 inline void KeyboardPressedCallback(unsigned char key, int x, int y) {
@@ -59,10 +101,30 @@ inline void KeyboardReleaseCallback(unsigned char key, int x, int y) {
     keyInputCurrentState[key] = false;
 }
 
+void InputRegisterMouse(int button, action_t action,
+                        std::function<void(int x, int y)> callbackFunc) {
+    mouseInputMapper[button].isActive = true;
+
+    if (action & KEY_PRESS) {
+        mouseInputMapper[button].onPress = callbackFunc;
+    }
+    if (action & KEY_RELEASE) {
+        mouseInputMapper[button].onRelease = callbackFunc;
+    }
+    if ((action & KEY_HOLD) || button == MOUSE_MOTION) {
+        mouseInputMapper[button].onHold = callbackFunc;
+    }
+}
+
 inline void MouseActionCallback(int btn, int state, int x, int y) {
-    // To be implemented: Map GLUT mouse buttons to your new C++ mouse state arrays
+    mouseButtonCurrentStates[btn].x = x;
+    mouseButtonCurrentStates[btn].y = y;
+    bool isPressed = (state == GLUT_DOWN);
+    mouseButtonCurrentStates[btn].isPressed = isPressed;
 }
 
 inline void MouseMovementCallback(int x, int y) {
-    // To be implemented: Update mouse X/Y deltas
+    mouseButtonCurrentStates[MOUSE_MOTION].x = x;
+    mouseButtonCurrentStates[MOUSE_MOTION].y = y;
+    mouseButtonCurrentStates[MOUSE_MOTION].isPressed = true;
 }
