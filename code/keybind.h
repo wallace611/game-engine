@@ -53,8 +53,8 @@ void InitKeybinds() {
     InputRegisterKey('g', KEY_PRESS, []() {
         CollisionOptimizedScene* scene = dynamic_cast<CollisionOptimizedScene*>(GetScene());
         if (scene) {
-            scene->SetSpeedUp(!scene->IsSpeedUp());
-            std::cout << (!scene->IsSpeedUp() ? "Speed up" : "Without speed up") << "\n";
+            scene->useSpeedUp = !scene->useSpeedUp;
+            std::cout << (scene->useSpeedUp ? "Speed up" : "Without speed up") << "\n";
         }
     });
 }
