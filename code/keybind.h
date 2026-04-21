@@ -43,10 +43,18 @@ void InitKeybinds() {
         cam->Rotate((float) -y / 5, (float) -x / 5);
     });
     InputRegisterMouse(MOUSE_LEFT_BTN, KEY_PRESS, [](int x, int y) {
+        static int cnt = 0;
         Camera* cam = GetScene()->GetCamera();
         Ball* ball = new Ball(cam->GetGlobalPosition(), cam->GetCameraFront() * 10.0f);
         GetScene()->AddChild(ball);
+        cnt += 1;
+        std::cout << "Number of balls: " << cnt << "\n";
     });
     InputRegisterKey('g', KEY_PRESS, []() {
+        CollisionOptimizedScene* scene = dynamic_cast<CollisionOptimizedScene*>(GetScene());
+        if (scene) {
+            scene->SetSpeedUp(!scene->IsSpeedUp());
+            std::cout << (!scene->IsSpeedUp() ? "Speed up" : "Without speed up") << "\n";
+        }
     });
 }
