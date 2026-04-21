@@ -7,7 +7,7 @@
 
 #include "object/scene_object.h"
 
-#define ENG_DEFAULT_FPS 100
+#define ENG_DEFAULT_FPS 90
 #define ENG_DEFAULT_WINDOW_WID 1200
 #define ENG_DEFAULT_WINDOW_HEI 700
 #define ENG_DEFAULT_WINDOW_POS_X 100
@@ -38,6 +38,7 @@ float GetCurrentFPS();
 double GetTimer();
 static void Tick(float deltatime);
 Scene* GetScene();
+void SetScene(Scene* scene_);
 
 // Callback functions
 static void DisplayFunction();

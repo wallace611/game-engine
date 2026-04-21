@@ -18,6 +18,7 @@ class SphereCollider;
 class Collider : public Object {
 protected:
     bool isDebugMode;
+    bool isDynamic;
     unsigned char channelMask;
 
     std::function<void(Collider* self, Collider* from, const HitResult&)> hitCallback;

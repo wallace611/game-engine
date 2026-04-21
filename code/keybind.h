@@ -5,6 +5,10 @@
 #include "engine/engine.h"
 #include "object/ball.h"
 
+#include "object/scene/collision_optimized_scene.h"
+
+#include "camera_settings.h"
+
 #include <iostream>
 
 void InitKeybinds() {
@@ -31,6 +35,7 @@ void InitKeybinds() {
     InputRegisterKey('v', KEY_PRESS, [cam]() {
         cam->SetProjectionMode(!cam->GetProjectionMode());
     });
+    InputRegisterKey('t', KEY_PRESS, NextCamera);
     InputRegisterKey('p', KEY_PRESS, []() {
         PauseGame();
     });
@@ -41,5 +46,7 @@ void InitKeybinds() {
         Camera* cam = GetScene()->GetCamera();
         Ball* ball = new Ball(cam->GetGlobalPosition(), cam->GetCameraFront() * 10.0f);
         GetScene()->AddChild(ball);
+    });
+    InputRegisterKey('g', KEY_PRESS, []() {
     });
 }

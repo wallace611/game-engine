@@ -24,7 +24,7 @@ Wall::Wall(int x, int y, int z, const glm::vec3& color1, const glm::vec3& color2
     }
     AABBCollider* collider = new AABBCollider(glm::vec3(-0.5f), glm::vec3(0.5f));
     collider->SetLocalScale(glm::vec3(x, y, z));
-    GetScene()->AddChild(collider, this);
+    GetScene()->AddChild(collider, this, false);
 }
 
 Wall::Wall(glm::vec3 &size, glm::vec3 &mainColor) : ColorInterface(mainColor) {
@@ -37,7 +37,7 @@ Wall::Wall(glm::vec3 &size, glm::vec3 &mainColor) : ColorInterface(mainColor) {
     GetScene()->AddChild(cube, this);
     AABBCollider* collider = new AABBCollider(glm::vec3(-0.5f), glm::vec3(0.5f));
     collider->SetLocalScale(size);
-    GetScene()->AddChild(collider, this);
+    GetScene()->AddChild(collider, this, false);
 }
 
 void Wall::Ready() {

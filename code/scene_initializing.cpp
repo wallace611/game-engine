@@ -5,6 +5,8 @@
 #include "object/collision/sphere.h"
 #include "object/wall.h"
 #include "object/ball.h"
+#include "object/car.h"
+#include "object/man.h"
 #include "input/input_mapper.h"
 
 #include <glm/gtc/random.hpp>
@@ -37,13 +39,31 @@ void InitScene() {
     wall4->SetGlobalPosition(glm::vec3(-11.0f, 9.0f, 0.0f));
     GetScene()->AddChild(wall4, root);
 
-    Object* car = new Object();
-    car->SetGlobalPosition(glm::vec3(0.0f, -0.9f, 0.0f));
-    car->SetGlobalRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
-    PhongDrawer* carDrawer = new PhongDrawer("model/911.ply", car);
-    carDrawer->EnableCustomColor(true);
-    carDrawer->SetCustomColor(glm::vec3(1.0f, 0.0f, 0.0f));
-    car->SetDrawer(carDrawer);
+    AABBCollider* top = new AABBCollider(glm::vec3(-0.5), glm::vec3(0.5));
+    top->SetGlobalPosition(glm::vec3(0.0f, 22.0f, 0.0f));
+    top->SetGlobalScale(glm::vec3(21.0f, 1.0f, 21.0f));
+    top->SetDebugMode(true);
+    GetScene()->AddChild(top, root);
+
+    Car* car = new Car(glm::vec3(1.0f, 0.0f, 0.0f));
+    car->SetGlobalPosition(glm::vec3(0.0f, -0.9f, 3.0f));
+    car->SetGlobalRotation(glm::vec3(-90.0f, 30.0f, 0.0f));
     GetScene()->AddChild(car, root);
-    
+
+    Car* car2 = new Car(glm::vec3(0.5f, 1.0f, 0.1f));
+    car2->SetGlobalPosition(glm::vec3(1.0f, -0.9f, -3.0f));
+    car2->SetGlobalRotation(glm::vec3(-90.0f, -45.0f, 0.0f));
+    GetScene()->AddChild(car2, root);
+
+    Man* man1 = new Man(glm::vec3(0.0f, 0.0f, 1.0f));
+    man1->SetGlobalPosition(glm::vec3(-8.0f, -1.5f, -8.0f));
+    man1->SetGlobalScale(glm::vec3(0.3));
+    man1->SetGlobalRotation(glm::vec3(-90.0f, 30.0f, 0.0f));
+    GetScene()->AddChild(man1, root);
+
+    Man* man2 = new Man(glm::vec3(1.0f, 0.0f, 0.5f));
+    man2->SetGlobalPosition(glm::vec3(8.0f, -1.5f, 8.0f));
+    man2->SetGlobalScale(glm::vec3(0.4));
+    man2->SetGlobalRotation(glm::vec3(-90.0f, 210.0f, 0.0f));
+    GetScene()->AddChild(man2, root);
 }

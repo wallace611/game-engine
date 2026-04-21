@@ -13,6 +13,7 @@
 class Camera : public Object {
 protected:
     bool projectionMode; // true for perspective, false for orthographic
+    bool isMovable;
 
     float aspectRatio;
     float orthoSize;
@@ -47,6 +48,8 @@ public:
 
     bool GetProjectionMode() const;
     void SetProjectionMode(bool perspective);
+    bool IsMovable() const;
+    void SetIsMovable(bool flag);
     float GetAspectRatio() const;
     void SetAspectRatio(float ratio);
     float GetOrthoSize() const;

@@ -5,12 +5,16 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+
+#include "engine.h"
 
 Camera::Camera() {
     projectionMode = CAMERA_PERSPECTIVE;
+    isMovable = true;
 
-    aspectRatio = 16.0f / 9.0f;
-    orthoSize = 5.0f;
+    aspectRatio = (float) ENG_DEFAULT_WINDOW_WID / ENG_DEFAULT_WINDOW_HEI;
+    orthoSize = 30.0f;
 
     fov = 60.0f;
     zNear = 0.9f;
@@ -42,6 +46,10 @@ bool Camera::GetProjectionMode() const {
 void Camera::SetProjectionMode(bool perspective) {
     projectionMode = perspective;
 }
+
+bool Camera::IsMovable() const { return isMovable; }
+
+void Camera::SetIsMovable(bool flag) { isMovable = flag; }
 
 float Camera::GetAspectRatio() const { 
     return aspectRatio;
@@ -102,11 +110,15 @@ void Camera::SetLocalRotation(const glm::vec3& eulerDegrees) {
 }
 
 void Camera::Move(const glm::vec3 direction) {
+    if (!isMovable) return;
+
     // Accumulate movement direction (e.g., W and D pressed together)
     pendingMoveDirection += direction;
 }
 
 void Camera::Rotate(float pitch, float yaw) {
+    if (!isMovable) return;
+
     // Accumulate rotation deltas from mouse movement
     pendingPitchDelta += pitch;
     pendingYawDelta += yaw;

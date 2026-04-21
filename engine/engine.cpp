@@ -24,8 +24,7 @@ void EngineInit(int* argc, char** argv) {
     mouse_center_x = window_wid / 2;
     mouse_center_y = window_hei / 2;
 
-    // Initialize objects
-    scene = new Scene();
+    
 
     // Initialize GLUT
     glutInit(argc, argv);
@@ -54,6 +53,9 @@ void EngineInit(int* argc, char** argv) {
     glutIdleFunc(IdleFunction);
     glutReshapeFunc(ReshapeFunction);
     glutSetCursor(GLUT_CURSOR_NONE);
+
+    // Initialize objects
+    scene = new Scene();
 }
 
 void EngineStartLoop() {
@@ -81,11 +83,25 @@ void Tick(float deltatime) {
 
     InputMapperUpdate();
     
-    char tmp[256];
-    snprintf(tmp, sizeof(tmp),
-        "frame rate: %3.1f, deltatime: %7.4f, timer: %7.2f\n",
-        GetCurrentFPS(), deltatime, GetTimer()
-    );
+    static float printTimer = 0.0f;
+    static int ticksPassed = 0;
+    static float accFPS = 0.0f;
+    static float lastTime = 0.0f;
+    if (printTimer > 1.0f) {
+        char tmp[256];
+        snprintf(tmp, sizeof(tmp),
+            "frame rate: %3.1f, deltatime: %7.4f, timer: %7.2f\n",
+            accFPS / ticksPassed, (GetTimer() - lastTime) / ticksPassed, GetTimer()
+        );
+        std::cout << tmp << "\n";
+        printTimer = 0.0f;
+        ticksPassed = 0;
+        accFPS = 0.0f;
+        lastTime = GetTimer();
+    }
+    printTimer += deltatime;
+    accFPS += GetCurrentFPS();
+    ticksPassed += 1;
 
     if (!is_paused) {
         scene->Update(deltatime);
@@ -107,6 +123,10 @@ Scene *GetScene() {
     return scene;
 }
 
+void SetScene(Scene *scene_) {
+    scene = scene_;
+}
+
 void DisplayFunction() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -120,13 +140,21 @@ void IdleFunction() {
     auto current_time = std::chrono::high_resolution_clock::now();
     auto elapsed = current_time - last_time;
 
-    // PERFORMANCE FIX: Sleep the thread if we rendered too fast instead of busy-waiting
     if (elapsed < target_delta_nano) {
-        std::this_thread::sleep_for(target_delta_nano - elapsed);
+        auto time_to_wait = target_delta_nano - elapsed;
         
-        // Update current time after waking up
-        current_time = std::chrono::high_resolution_clock::now();
-        elapsed = current_time - last_time;
+        auto sleep_time = time_to_wait - std::chrono::milliseconds(2);
+        if (sleep_time > std::chrono::nanoseconds::zero()) {
+            std::this_thread::sleep_for(sleep_time);
+        }
+
+        while (true) {
+            current_time = std::chrono::high_resolution_clock::now();
+            elapsed = current_time - last_time;
+            if (elapsed >= target_delta_nano) {
+                break; 
+            }
+        }
     }
 
     // Calculate actual delta time in seconds

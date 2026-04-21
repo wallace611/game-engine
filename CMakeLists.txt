@@ -36,9 +36,13 @@ add_executable(main
     engine/rendering/drawer/phong_drawer.cpp
 
     code/scene_initializing.cpp
+    code/camera_settings.cpp
     code/object/wall.cpp
     code/object/ball.cpp
+    code/object/car.cpp
+    code/object/scene/collision_optimized_scene.cpp
     code/interface/color_interface.cpp
+    code/object/man.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)

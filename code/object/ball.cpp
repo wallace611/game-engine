@@ -38,7 +38,7 @@ void Ball::CollisionCallback(Collider *from, const HitResult &hitResult) {
     glm::vec3 correction = hitResult.hitNormal * (hitResult.penetrationDepth * 0.5f);
     this->SetGlobalPosition(this->GetGlobalPosition() + correction);
 
-    const float restitution = 0.8f; 
+    const float restitution = 1.0f; 
     this->velocity = glm::reflect(this->velocity, hitResult.hitNormal) * restitution;
 
     Object* parentFrom = from->GetParent();
