@@ -5,8 +5,6 @@
 #include "engine/engine.h"
 #include "object/ball.h"
 
-#include "object/scene/collision_optimized_scene.h"
-
 #include "camera_settings.h"
 
 #include <iostream>
@@ -49,12 +47,5 @@ void InitKeybinds() {
         GetScene()->AddChild(ball);
         cnt += 1;
         std::cout << "Number of balls: " << cnt << "\n";
-    });
-    InputRegisterKey('g', KEY_PRESS, []() {
-        CollisionOptimizedScene* scene = dynamic_cast<CollisionOptimizedScene*>(GetScene());
-        if (scene) {
-            scene->useSpeedUp = !scene->useSpeedUp;
-            std::cout << (scene->useSpeedUp ? "Speed up" : "Without speed up") << "\n";
-        }
     });
 }

@@ -40,7 +40,6 @@ add_executable(main
     code/object/wall.cpp
     code/object/ball.cpp
     code/object/car.cpp
-    code/object/scene/collision_optimized_scene.cpp
     code/interface/color_interface.cpp
     code/object/man.cpp
 )
