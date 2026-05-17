@@ -3,7 +3,6 @@
 #include "input/input_mapper.h"
 #include "object/scene_object.h"
 #include "engine/engine.h"
-#include "object/ball.h"
 
 #include "camera_settings.h"
 
@@ -40,12 +39,5 @@ void InitKeybinds() {
     InputRegisterMouse(MOUSE_MOTION, 0, [cam](int x, int y) {
         cam->Rotate((float) -y / 5, (float) -x / 5);
     });
-    InputRegisterMouse(MOUSE_LEFT_BTN, KEY_PRESS, [](int x, int y) {
-        static int cnt = 0;
-        Camera* cam = GetScene()->GetCamera();
-        Ball* ball = new Ball(cam->GetGlobalPosition(), cam->GetCameraFront() * 10.0f);
-        GetScene()->AddChild(ball);
-        cnt += 1;
-        std::cout << "Number of balls: " << cnt << "\n";
-    });
+
 }

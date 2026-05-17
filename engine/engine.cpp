@@ -74,6 +74,8 @@ float GetCurrentFPS() {
     return current_fps;
 }
 
+float GetDeltatime() { return current_deltatime; }
+
 double GetTimer() {
     return timer;
 }

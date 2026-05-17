@@ -1,55 +1,41 @@
 #include "ball.h"
 
-#include "engine.h"
-#include "glm/gtc/random.hpp"
+#include <iostream>
+#include "object/collision/sphere.h"
 #include "rendering/drawer/phong_drawer.h"
+#include "engine.h"
 
-Ball::Ball() : Ball(glm::ballRand(9.0f) + glm::vec3(0.0f, 15.0f, 0.0f), glm::ballRand(5.0f)) {}
-
-Ball::Ball(glm::vec3 &initialPosition, glm::vec3 &initialVelocity) : Object(), ColorInterface(glm::vec3(0.3)) {
-    this->SetGlobalPosition(initialPosition);
-    this->velocity = initialVelocity;
-    PhongDrawer* drawer = new PhongDrawer("model/sphere.ply", this);
-    drawer->EnableCustomColor(true);
-    drawer->SetCustomColor(glm::vec3(0.3f));
-    this->SetDrawer(drawer);
-    this->SetGlobalScale(glm::vec3(2.0f));
+Ball::Ball(Water* waterRef) {
+    rigidbodyComp = new RigidBody(waterRef, this);
+    this->SetDrawer(new PhongDrawer("model/sphere.ply", this));
+    SphereCollider* collider = new SphereCollider(glm::vec3(0.0f), BASE_RADIUS);
+    GetScene()->AddChild(collider, this);
+    collider->SetHitCallback([this](Collider* self, Collider* from, const HitResult& hitResult) {
+        this->Callback(from, hitResult);
+    });
+    collider->SetDebugMode(true);
 }
 
 void Ball::Ready() {
-    collider = new SphereCollider(glm::vec3(0.0f), 0.5f, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 0.2f);
-    collider->SetHitCallback([this](Collider* self, Collider* from, const HitResult& hitResult) {
-        this->CollisionCallback(from, hitResult);
-    });
-    GetScene()->AddChild(collider, this);
+    Object::Ready();
 }
 
 void Ball::Update(float deltatime) {
-    this->SetGlobalPosition(this->GetGlobalPosition() + this->velocity * deltatime);
-
     Object::Update(deltatime);
+
+    velocity += gravity * deltatime;
+    if (rigidbodyComp) {
+        velocity += rigidbodyComp->GetSphereBuoyancyVelocity(GetGlobalPosition(), mass, GetGlobalRadius()) * deltatime;
+        velocity += rigidbodyComp->GetSphereDragAcceleration(GetGlobalPosition(), mass, velocity, GetGlobalRadius()) * deltatime;
+    }
+    SetGlobalPosition(GetGlobalPosition() + velocity * deltatime);
 }
 
-void Ball::CollisionCallback(Collider *from, const HitResult &hitResult) {
-    if (glm::dot(this->velocity, hitResult.hitNormal) >= 0.0f) {
-        return;
-    }
-
+void Ball::Callback(Collider *other, const HitResult &hitResult) {
     glm::vec3 correction = hitResult.hitNormal * (hitResult.penetrationDepth * 0.5f);
     this->SetGlobalPosition(this->GetGlobalPosition() + correction);
 
-    const float restitution = 1.0f; 
+    const float restitution = 0.8f; 
     this->velocity = glm::reflect(this->velocity, hitResult.hitNormal) * restitution;
 
-    Object* parentFrom = from->GetParent();
-    if (parentFrom != nullptr) {
-        ColorInterface* iColor = dynamic_cast<ColorInterface*>(parentFrom);
-        if (iColor != nullptr && this->GetDrawer() != nullptr) {
-            PhongDrawer* drawer = dynamic_cast<PhongDrawer*>(this->GetDrawer());
-            if (drawer != nullptr) {
-                drawer->EnableCustomColor(true);
-                drawer->SetCustomColor(iColor->GetBaseColor());
-            }
-        }
-    }
 }

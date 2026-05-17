@@ -35,6 +35,7 @@ void EngineInit(int* argc, char** argv);
 void EngineStartLoop();
 void SetTargetFPS(unsigned int fps);
 float GetCurrentFPS();
+float GetDeltatime();
 double GetTimer();
 static void Tick(float deltatime);
 Scene* GetScene();

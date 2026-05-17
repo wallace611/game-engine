@@ -37,11 +37,11 @@ add_executable(main
 
     code/scene_initializing.cpp
     code/camera_settings.cpp
-    code/object/wall.cpp
+    code/object/water_tank.cpp
+    code/object/water.cpp
+    code/component/rigidbody.cpp
     code/object/ball.cpp
-    code/object/car.cpp
-    code/interface/color_interface.cpp
-    code/object/man.cpp
+    code/object/slab.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)
