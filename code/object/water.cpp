@@ -4,7 +4,9 @@
 #include "rendering/drawer/phong_drawer.h"
 
 Water::Water(float minX, float maxX, float minZ, float maxZ) : minX(minX), maxX(maxX), minZ(minZ), maxZ(maxZ) {
+    name = "Water";
     Object* waterSurface = new Object();
+    waterSurface->name = "WaterSurface";
     GetScene()->AddChild(waterSurface, this);
     waterSurface->SetLocalPosition(glm::vec3((maxX + minX) / 2.0f, (maxZ + minZ) / 2.0f, 0.0f));
     waterSurface->SetLocalScale(glm::vec3(maxX - minX, maxZ - minZ, 1.0f));

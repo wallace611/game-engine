@@ -4,6 +4,10 @@
   "dependencies": [
     "freeglut",
     "glad",
-    "glm"
+    "glm",
+    {
+      "name": "imgui",
+      "features": ["opengl3-binding"]
+    }
   ]
 }

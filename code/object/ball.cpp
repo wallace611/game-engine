@@ -6,6 +6,7 @@
 #include "engine.h"
 
 Ball::Ball(Water* waterRef) {
+    name = "Ball";
     rigidbodyComp = new RigidBody(waterRef, this);
     this->SetDrawer(new PhongDrawer("model/sphere.ply", this));
     SphereCollider* collider = new SphereCollider(glm::vec3(0.0f), BASE_RADIUS);

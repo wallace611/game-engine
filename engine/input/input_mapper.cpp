@@ -1,4 +1,5 @@
 #include "input_mapper.h"
+#include "../rendering/imgui_layer.h"
 
 bool allowMouseMotion;
 
@@ -83,7 +84,7 @@ void InputMapperUpdate() {
     }
     i = MOUSE_MOTION;
     if (mouseInputMapper[i].isActive) {
-        if (allowMouseMotion) {
+        if (allowMouseMotion && !ImGuiWantsMouse()) {
             int x = mouseButtonCurrentStates[i].x - mouseButtonLastStates[i].x;
             int y = mouseButtonCurrentStates[i].y - mouseButtonLastStates[i].y;
 
@@ -94,7 +95,8 @@ void InputMapperUpdate() {
 }
 
 inline void KeyboardPressedCallback(unsigned char key, int x, int y) {
-    keyInputCurrentState[key] = true;
+    ImGuiLayerAddChar(key);
+    if (!ImGuiWantsKeyboard()) keyInputCurrentState[key] = true;
 }
 
 inline void KeyboardReleaseCallback(unsigned char key, int x, int y) {
@@ -117,13 +119,15 @@ void InputRegisterMouse(int button, action_t action,
 }
 
 inline void MouseActionCallback(int btn, int state, int x, int y) {
+    ImGuiLayerAddMousePos((float)x, (float)y);
+    if (btn >= 0 && btn < 3) ImGuiLayerAddMouseButton(btn, state == GLUT_DOWN);
     mouseButtonCurrentStates[btn].x = x;
     mouseButtonCurrentStates[btn].y = y;
-    bool isPressed = (state == GLUT_DOWN);
-    mouseButtonCurrentStates[btn].isPressed = isPressed;
+    mouseButtonCurrentStates[btn].isPressed = (state == GLUT_DOWN);
 }
 
 inline void MouseMovementCallback(int x, int y) {
+    ImGuiLayerAddMousePos((float)x, (float)y);
     mouseButtonCurrentStates[MOUSE_MOTION].x = x;
     mouseButtonCurrentStates[MOUSE_MOTION].y = y;
     mouseButtonCurrentStates[MOUSE_MOTION].isPressed = true;

@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "rendering/shader_loader.h"
+#include "rendering/imgui_layer.h"
 #include "input/input_mapper.h"
 
 int window_wid, window_hei;
@@ -47,6 +48,7 @@ void EngineInit(int* argc, char** argv) {
     glDepthFunc(GL_LEQUAL);
 
     InputMapperInit();
+    ImGuiLayerInit();
 
     // Register callbacks
     glutDisplayFunc(DisplayFunction);
@@ -105,17 +107,27 @@ void Tick(float deltatime) {
     accFPS += GetCurrentFPS();
     ticksPassed += 1;
 
+    bool imguiMouse = ImGuiWantsMouse();
+
     if (!is_paused) {
         scene->Update(deltatime);
         scene->CollisionCheck();
-        if (allowMouseMotion) {
+        if (allowMouseMotion && !imguiMouse) {
             glutWarpPointer(mouse_center_x, mouse_center_y);
             allowMouseMotion = false;
             warp_time = timer;
         }
-        else if (timer - warp_time > deltatime) {
+        else if (!imguiMouse && timer - warp_time > deltatime) {
             allowMouseMotion = true;
         }
+    }
+
+    // 根據 ImGui 是否要捕捉滑鼠，動態顯示/隱藏遊標
+    static bool cursorHidden = true;
+    bool shouldHide = !imguiMouse && !is_paused;
+    if (shouldHide != cursorHidden) {
+        glutSetCursor(shouldHide ? GLUT_CURSOR_NONE : GLUT_CURSOR_LEFT_ARROW);
+        cursorHidden = shouldHide;
     }
 
     glutPostRedisplay();
@@ -134,7 +146,11 @@ void DisplayFunction() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     scene->Render();
-    
+
+    ImGuiLayerBegin(window_wid, window_hei, current_deltatime);
+    DrawSceneInspector(scene);
+    ImGuiLayerEnd();
+
     glutSwapBuffers();
 }
 

@@ -1,0 +1,128 @@
+#include "imgui_layer.h"
+
+#include <glad/glad.h>
+
+#include <imgui.h>
+#include <imgui_impl_opengl3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "object/scene_object.h"
+#include "object/object.h"
+
+static Object* selectedObject = nullptr;
+
+// --- Scene tree ---
+
+static void DrawObjectTree(Object* obj) {
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+    if (obj->GetChildren().empty()) flags |= ImGuiTreeNodeFlags_Leaf;
+    if (selectedObject == obj)      flags |= ImGuiTreeNodeFlags_Selected;
+
+    bool open = ImGui::TreeNodeEx((void*)obj, flags, "%s", obj->name.c_str());
+
+    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        selectedObject = obj;
+
+    if (open) {
+        for (Object* child : obj->GetChildren())
+            DrawObjectTree(child);
+        ImGui::TreePop();
+    }
+}
+
+// --- Properties panel ---
+
+static void DrawPropertiesPanel(Object* obj) {
+    ImGui::Text("[ %s ]", obj->name.c_str());
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    glm::vec3 pos = obj->GetLocalPosition();
+    if (ImGui::DragFloat3("Local Position", glm::value_ptr(pos), 0.05f))
+        obj->SetLocalPosition(pos);
+
+    glm::vec3 rot = obj->GetLocalRotationEuler();
+    if (ImGui::DragFloat3("Local Rotation", glm::value_ptr(rot), 0.5f))
+        obj->SetLocalRotation(rot);
+
+    glm::vec3 scale = obj->GetLocalScale();
+    if (ImGui::DragFloat3("Local Scale", glm::value_ptr(scale), 0.05f, 0.001f, 100.0f))
+        obj->SetLocalScale(scale);
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::TextDisabled("Read-only (Global)");
+    ImGui::Spacing();
+
+    glm::vec3 gpos = obj->GetGlobalPosition();
+    ImGui::InputFloat3("Global Position", glm::value_ptr(gpos), "%.3f", ImGuiInputTextFlags_ReadOnly);
+
+    glm::vec3 grot = obj->GetGlobalRotationEuler();
+    ImGui::InputFloat3("Global Rotation", glm::value_ptr(grot), "%.3f", ImGuiInputTextFlags_ReadOnly);
+
+    glm::vec3 gscale = obj->GetGlobalScale();
+    ImGui::InputFloat3("Global Scale",    glm::value_ptr(gscale), "%.3f", ImGuiInputTextFlags_ReadOnly);
+}
+
+// --- Public API ---
+
+void ImGuiLayerInit() {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui::StyleColorsDark();
+    ImGui_ImplOpenGL3_Init("#version 330");
+}
+
+void ImGuiLayerBegin(int width, int height, float deltaTime) {
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2((float)width, (float)height);
+    io.DeltaTime   = (deltaTime > 0.0f) ? deltaTime : (1.0f / 60.0f);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui::NewFrame();
+}
+
+void ImGuiLayerEnd() {
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void ImGuiLayerShutdown() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui::DestroyContext();
+}
+
+// Input forwarding
+void ImGuiLayerAddChar(unsigned char c)          { ImGui::GetIO().AddInputCharacter(c); }
+void ImGuiLayerAddMousePos(float x, float y)     { ImGui::GetIO().AddMousePosEvent(x, y); }
+void ImGuiLayerAddMouseButton(int btn, bool down){ ImGui::GetIO().AddMouseButtonEvent(btn, down); }
+bool ImGuiWantsMouse()    { return ImGui::GetIO().WantCaptureMouse; }
+bool ImGuiWantsKeyboard() { return ImGui::GetIO().WantCaptureKeyboard; }
+
+// --- Panel ---
+
+void DrawSceneInspector(Scene* scene) {
+    ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(390.0f, 520.0f), ImGuiCond_Once);
+
+    ImGui::Begin("Scene Inspector");
+
+    ImGui::BeginChild("##tree", ImVec2(150.0f, 0), true);
+    for (Object* child : scene->GetChildren())
+        DrawObjectTree(child);
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+
+    ImGui::BeginChild("##props", ImVec2(0, 0), true);
+    if (selectedObject)
+        DrawPropertiesPanel(selectedObject);
+    else
+        ImGui::TextDisabled("Select an object");
+    ImGui::EndChild();
+
+    ImGui::End();
+}

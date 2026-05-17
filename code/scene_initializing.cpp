@@ -18,15 +18,18 @@ void InitScene() {
     cam->SetLocalRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
     Object* root = new Object();
+    root->name = "Root";
     GetScene()->AddChild(root);
 
     Object* actualTank = new Object();
+    actualTank->name = "Tank";
     GetScene()->AddChild(actualTank, root);
     actualTank->SetDrawer(new PhongDrawer("model/tank.ply", "textures/tank.png", actualTank));
     actualTank->SetLocalPosition(glm::vec3(0.0f, 5.0f, -10.0f));
     actualTank->SetGlobalRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
 
     Object* tankFloor = new Object();
+    tankFloor->name = "TankFloor";
     GetScene()->AddChild(tankFloor, root);
     tankFloor->SetDrawer(new PhongDrawer("model/cube.ply", tankFloor));
     tankFloor->SetLocalPosition(glm::vec3(0.0f, 4.5f, -10.0f));

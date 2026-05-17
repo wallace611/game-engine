@@ -5,7 +5,9 @@
 #include "rendering/drawer/phong_drawer.h"
 
 WaterTank::WaterTank() {
+    name = "WaterTank";
     Object* floor = new Object();
+    floor->name = "Floor";
     GetScene()->AddChild(floor, this);
     floor->SetLocalScale(glm::vec3(10.0f, 1.0f, 10.0f));
     floor->SetLocalPosition(glm::vec3(0.0f, -0.5f, 0.0f));
@@ -16,6 +18,7 @@ WaterTank::WaterTank() {
     GetScene()->AddChild(floorCollider, floor, false);
 
     Object* wall1 = new Object();
+    wall1->name = "Wall1";
     GetScene()->AddChild(wall1, this);
     wall1->SetLocalScale(glm::vec3(10.0f, 5.0f, 1.0f));
     wall1->SetLocalPosition(glm::vec3(0.0f, 2.5f, -5.5f));
@@ -26,6 +29,7 @@ WaterTank::WaterTank() {
     GetScene()->AddChild(wall1Collider, wall1, false);
 
     Object* wall2 = new Object();
+    wall2->name = "Wall2";
     GetScene()->AddChild(wall2, this);
     wall2->SetLocalScale(glm::vec3(10.0f, 5.0f, 1.0f));
     wall2->SetLocalPosition(glm::vec3(0.0f, 2.5f, 5.5f));
@@ -36,6 +40,7 @@ WaterTank::WaterTank() {
     GetScene()->AddChild(wall2Collider, wall2, false);
 
     Object* wall3 = new Object();
+    wall3->name = "Wall3";
     GetScene()->AddChild(wall3, this);
     wall3->SetLocalScale(glm::vec3(1.0f, 5.0f, 10.0f));
     wall3->SetLocalPosition(glm::vec3(-5.5f, 2.5f, 0.0f));
@@ -46,6 +51,7 @@ WaterTank::WaterTank() {
     GetScene()->AddChild(wall3Collider, wall3, false);
 
     Object* wall4 = new Object();
+    wall4->name = "Wall4";
     GetScene()->AddChild(wall4, this);
     wall4->SetLocalScale(glm::vec3(1.0f, 5.0f, 10.0f));
     wall4->SetLocalPosition(glm::vec3(5.5f, 2.5f, 0.0f));

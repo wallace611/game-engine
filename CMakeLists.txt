@@ -12,6 +12,7 @@ find_package(OpenGL REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(FreeGLUT CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/engine)
 include_directories(${CMAKE_SOURCE_DIR}/code)
@@ -42,9 +43,11 @@ add_executable(main
     code/component/rigidbody.cpp
     code/object/ball.cpp
     code/object/slab.cpp
+
+    engine/rendering/imgui_layer.cpp
 )
 
-target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm)
+target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm imgui::imgui)
 
 # Link system OpenGL library for Windows
 if(WIN32)

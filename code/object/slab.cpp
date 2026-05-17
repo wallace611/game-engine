@@ -5,7 +5,9 @@
 #include "rendering/drawer/phong_drawer.h"
 
 Slab::Slab(Water *waterRef) {
+    name = "Slab";
     Object* slabRender = new Object();
+    slabRender->name = "SlabMesh";
     GetScene()->AddChild(slabRender, this);
     slabRender->SetLocalScale(glm::vec3(1.0f, 0.3f, 1.0f));
     slabRender->SetDrawer(new PhongDrawer("model/cube.ply", slabRender));

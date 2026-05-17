@@ -4,10 +4,14 @@
 #include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <functional>
+#include <string>
 
 class ModelDrawer;
 
 class Object {
+public:
+    std::string name = "Object";
+
 protected:
     glm::vec3 localPosition;
     glm::quat localRotation; 
@@ -59,6 +63,7 @@ public:
     virtual glm::mat4 GetGlobalMatrix() const;
 
     Object* GetParent() const;
+    const std::vector<Object*>& GetChildren() const;
 
     void SetTickFunction(std::function<void(Object*, float)> tickFunc);
     ModelDrawer* GetDrawer() const;
