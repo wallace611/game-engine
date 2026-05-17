@@ -9,7 +9,8 @@ void ImGuiLayerEnd();
 void ImGuiLayerShutdown();
 
 // Input forwarding (called from input_mapper callbacks)
-void ImGuiLayerAddChar(unsigned char c);
+void ImGuiLayerKeyDown(unsigned char c);
+void ImGuiLayerKeyUp(unsigned char c);
 void ImGuiLayerAddMousePos(float x, float y);
 void ImGuiLayerAddMouseButton(int button, bool down);
 

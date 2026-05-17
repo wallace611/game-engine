@@ -95,11 +95,12 @@ void InputMapperUpdate() {
 }
 
 inline void KeyboardPressedCallback(unsigned char key, int x, int y) {
-    ImGuiLayerAddChar(key);
+    ImGuiLayerKeyDown(key);
     if (!ImGuiWantsKeyboard()) keyInputCurrentState[key] = true;
 }
 
 inline void KeyboardReleaseCallback(unsigned char key, int x, int y) {
+    ImGuiLayerKeyUp(key);
     keyInputCurrentState[key] = false;
 }
 

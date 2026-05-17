@@ -53,17 +53,20 @@ static void DrawPropertiesPanel(Object* obj) {
 
     ImGui::Spacing();
     ImGui::Separator();
-    ImGui::TextDisabled("Read-only (Global)");
+    ImGui::TextDisabled("Global");
     ImGui::Spacing();
 
     glm::vec3 gpos = obj->GetGlobalPosition();
-    ImGui::InputFloat3("Global Position", glm::value_ptr(gpos), "%.3f", ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::DragFloat3("Global Position", glm::value_ptr(gpos), 0.05f))
+        obj->SetGlobalPosition(gpos);
 
     glm::vec3 grot = obj->GetGlobalRotationEuler();
-    ImGui::InputFloat3("Global Rotation", glm::value_ptr(grot), "%.3f", ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::DragFloat3("Global Rotation", glm::value_ptr(grot), 0.5f))
+        obj->SetGlobalRotation(grot);
 
     glm::vec3 gscale = obj->GetGlobalScale();
-    ImGui::InputFloat3("Global Scale",    glm::value_ptr(gscale), "%.3f", ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::DragFloat3("Global Scale", glm::value_ptr(gscale), 0.05f, 0.001f, 100.0f))
+        obj->SetGlobalScale(gscale);
 }
 
 // --- Public API ---
@@ -71,7 +74,6 @@ static void DrawPropertiesPanel(Object* obj) {
 void ImGuiLayerInit() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     ImGui::StyleColorsDark();
     ImGui_ImplOpenGL3_Init("#version 330");
 }
@@ -96,7 +98,29 @@ void ImGuiLayerShutdown() {
 }
 
 // Input forwarding
-void ImGuiLayerAddChar(unsigned char c)          { ImGui::GetIO().AddInputCharacter(c); }
+static ImGuiKey CharToImGuiKey(unsigned char c) {
+    switch (c) {
+        case   8: return ImGuiKey_Backspace;
+        case 127: return ImGuiKey_Delete;
+        case  13: return ImGuiKey_Enter;
+        case  27: return ImGuiKey_Escape;
+        case   9: return ImGuiKey_Tab;
+        default:  return ImGuiKey_None;
+    }
+}
+
+void ImGuiLayerKeyDown(unsigned char c) {
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiKey k = CharToImGuiKey(c);
+    if (k != ImGuiKey_None) io.AddKeyEvent(k, true);
+    else                    io.AddInputCharacter(c);
+}
+
+void ImGuiLayerKeyUp(unsigned char c) {
+    ImGuiKey k = CharToImGuiKey(c);
+    if (k != ImGuiKey_None) ImGui::GetIO().AddKeyEvent(k, false);
+}
+
 void ImGuiLayerAddMousePos(float x, float y)     { ImGui::GetIO().AddMousePosEvent(x, y); }
 void ImGuiLayerAddMouseButton(int btn, bool down){ ImGui::GetIO().AddMouseButtonEvent(btn, down); }
 bool ImGuiWantsMouse()    { return ImGui::GetIO().WantCaptureMouse; }

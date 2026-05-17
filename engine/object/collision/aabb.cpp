@@ -10,12 +10,14 @@ AABBCollider::AABBCollider() : AABBCollider(glm::vec3(0.0f), glm::vec3(0.0f)) {}
 AABBCollider::AABBCollider(const glm::vec3 &minPt, const glm::vec3 &maxPt) : Collider() {
     this->minPoint = minPt;
     this->maxPoint = maxPt;
+    name = "AABBCollider";
 }
 
 AABBCollider::AABBCollider(const glm::vec3 &minPt, const glm::vec3 &maxPt,
                            const glm::vec4 &color, float faceAlpha) : Collider(color, faceAlpha) {
     this->minPoint = minPt;
     this->maxPoint = maxPt;
+    name = "AABBCollider";
 }
 
 glm::vec3 AABBCollider::GetMinPoint() const {

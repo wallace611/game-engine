@@ -11,6 +11,7 @@
 
 int window_wid, window_hei;
 int mouse_center_x, mouse_center_y;
+static bool mouseLocked = true;
 
 void EngineInit(int* argc, char** argv) {
     // Initialize time variables
@@ -112,19 +113,22 @@ void Tick(float deltatime) {
     if (!is_paused) {
         scene->Update(deltatime);
         scene->CollisionCheck();
-        if (allowMouseMotion && !imguiMouse) {
-            glutWarpPointer(mouse_center_x, mouse_center_y);
+        if (mouseLocked) {
+            if (allowMouseMotion && !imguiMouse) {
+                glutWarpPointer(mouse_center_x, mouse_center_y);
+                allowMouseMotion = false;
+                warp_time = timer;
+            }
+            else if (!imguiMouse && timer - warp_time > deltatime) {
+                allowMouseMotion = true;
+            }
+        } else {
             allowMouseMotion = false;
-            warp_time = timer;
-        }
-        else if (!imguiMouse && timer - warp_time > deltatime) {
-            allowMouseMotion = true;
         }
     }
 
-    // 根據 ImGui 是否要捕捉滑鼠，動態顯示/隱藏遊標
     static bool cursorHidden = true;
-    bool shouldHide = !imguiMouse && !is_paused;
+    bool shouldHide = !imguiMouse && !is_paused && mouseLocked;
     if (shouldHide != cursorHidden) {
         glutSetCursor(shouldHide ? GLUT_CURSOR_NONE : GLUT_CURSOR_LEFT_ARROW);
         cursorHidden = shouldHide;
@@ -208,15 +212,19 @@ void ReshapeFunction(int w, int h) {
 }
 
 void PauseGame() {
+    is_paused = !is_paused;
     allowMouseMotion = false;
-
-    if (is_paused) {
-        glutSetCursor(GLUT_CURSOR_NONE);
+    if (!is_paused && mouseLocked) {
         glutWarpPointer(mouse_center_x, mouse_center_y);
         warp_time = timer;
-    } else {
-        glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+    }
+}
+
+void ToggleMouseLock() {
+    mouseLocked = !mouseLocked;
+    if (mouseLocked && !is_paused) {
+        glutWarpPointer(mouse_center_x, mouse_center_y);
+        warp_time = timer;
         allowMouseMotion = false;
     }
-    is_paused = !is_paused;
 }

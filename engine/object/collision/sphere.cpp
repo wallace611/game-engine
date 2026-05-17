@@ -8,12 +8,14 @@ SphereCollider::SphereCollider() : SphereCollider(glm::vec3(0.0f), 1.0f) {}
 SphereCollider::SphereCollider(const glm::vec3 &center, float radius) : Collider() {
     this->center = center;
     this->radius = radius;
+    name = "SphereCollider";
 }
 
 SphereCollider::SphereCollider(const glm::vec3 &center, float radius,
                                const glm::vec4 &color, float faceAlpha) : Collider(color, faceAlpha) {
     this->center = center;
     this->radius = radius;
+    name = "SphereCollider";
 }
 
 glm::vec3 SphereCollider::GetCenter() const { return this->center; }

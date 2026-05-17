@@ -46,3 +46,4 @@ static void DisplayFunction();
 static void IdleFunction();
 static void ReshapeFunction(int w, int h);
 void PauseGame();
+void ToggleMouseLock();

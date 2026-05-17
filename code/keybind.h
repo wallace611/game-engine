@@ -36,6 +36,9 @@ void InitKeybinds() {
     InputRegisterKey('p', KEY_PRESS, []() {
         PauseGame();
     });
+    InputRegisterKey('e', KEY_PRESS, []() {
+        ToggleMouseLock();
+    });
     InputRegisterMouse(MOUSE_MOTION, 0, [cam](int x, int y) {
         cam->Rotate((float) -y / 5, (float) -x / 5);
     });

@@ -5,8 +5,9 @@
 Collider::Collider(const glm::vec4 &shapeColor, float faceAlpha) : Object() {
     this->hitCallback = nullptr;
     this->isDebugMode = false;
-    this->channelMask = COLLISION_CHANNEL_ALL; // Default to all channels
+    this->channelMask = COLLISION_CHANNEL_ALL;
     this->renderer = new ColliderDrawer(shapeColor, faceAlpha);
+    name = "Collider";
 }
 
 bool Collider::IsDebugModeEnabled() const { return this->isDebugMode; }
