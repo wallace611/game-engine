@@ -5,11 +5,14 @@
 
 class Slab : public Object {
 protected:
-    std::vector<std::pair<RigidBody*, glm::vec3>> buoyancyPoints; // Local positions of buoyancy points and their offsets
+    std::vector<glm::vec3> buoyancyPoints; // Local positions of buoyancy points
     glm::vec3 gravity = glm::vec3(0.0f, -9.81f, 0.0f);
     glm::vec3 velocity = glm::vec3(0.0f);
     glm::vec3 angularVelocity = glm::vec3(0.0f);
-    float mass = 200.0f;
+    float mass = 100.0f;
+    Water* waterRef;
+    bool isSleeping = false;
+    float sleepTimer = 0.0f;
 public:
     Slab(Water* waterRef);
 

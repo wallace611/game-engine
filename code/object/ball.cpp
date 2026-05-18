@@ -7,7 +7,7 @@
 
 Ball::Ball(Water* waterRef) {
     name = "Ball";
-    rigidbodyComp = new RigidBody(waterRef, this);
+    this->waterRef = waterRef;
     this->SetDrawer(new PhongDrawer("model/sphere.ply", this));
     SphereCollider* collider = new SphereCollider(glm::vec3(0.0f), BASE_RADIUS);
     GetScene()->AddChild(collider, this);
@@ -25,9 +25,9 @@ void Ball::Update(float deltatime) {
     Object::Update(deltatime);
 
     velocity += gravity * deltatime;
-    if (rigidbodyComp) {
-        velocity += rigidbodyComp->GetSphereBuoyancyVelocity(GetGlobalPosition(), mass, GetGlobalRadius()) * deltatime;
-        velocity += rigidbodyComp->GetSphereDragAcceleration(GetGlobalPosition(), mass, velocity, GetGlobalRadius()) * deltatime;
+    if (waterRef) {
+        velocity += RigidBody::GetSphereBuoyancyVelocity(waterRef, this, GetGlobalPosition(), mass, GetGlobalRadius()) * deltatime;
+        velocity += RigidBody::GetSphereDragAcceleration(waterRef, this, GetGlobalPosition(), mass, velocity, GetGlobalRadius()) * deltatime;
     }
     SetGlobalPosition(GetGlobalPosition() + velocity * deltatime);
 }

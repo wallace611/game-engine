@@ -52,8 +52,4 @@ void InitScene() {
     GetScene()->AddChild(slab, root);
     slab->SetLocalPosition(glm::vec3(2.0f, 6.0f, 0.0f));
 
-    InputRegisterKey('-', KEY_HOLD, [ball]() {
-        ball->SetGlobalPosition(glm::vec3(ball->GetGlobalPosition().x, 1.0f, ball->GetGlobalPosition().z));
-    });
-
 }

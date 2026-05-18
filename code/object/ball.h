@@ -11,7 +11,7 @@ protected:
     glm::vec3 velocity = glm::vec3(0.0f);
     const float BASE_RADIUS = 0.5f;
     float mass = 100.0f;
-    RigidBody* rigidbodyComp;
+    Water* waterRef;
 public:
     Ball(Water* waterRef);
 

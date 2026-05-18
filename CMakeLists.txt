@@ -40,11 +40,11 @@ add_executable(main
     code/camera_settings.cpp
     code/object/water_tank.cpp
     code/object/water.cpp
-    code/component/rigidbody.cpp
     code/object/ball.cpp
     code/object/slab.cpp
 
     engine/rendering/imgui_layer.cpp
+    code/object/test.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm imgui::imgui)
