@@ -45,6 +45,7 @@ add_executable(main
 
     engine/rendering/imgui_layer.cpp
     code/object/test.cpp
+    code/object/boat.cpp
 )
 
 target_link_libraries(main PRIVATE FreeGLUT::freeglut glad::glad glm::glm imgui::imgui)

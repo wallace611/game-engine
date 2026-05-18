@@ -9,6 +9,7 @@
 #include "object/water.h"
 #include "object/ball.h"
 #include "object/slab.h"
+#include "object/boat.h"
 
 #include <glm/gtc/random.hpp>
 
@@ -52,4 +53,7 @@ void InitScene() {
     GetScene()->AddChild(slab, root);
     slab->SetLocalPosition(glm::vec3(2.0f, 6.0f, 0.0f));
 
+    Boat* boat = new Boat(water);
+    GetScene()->AddChild(boat, root);
+    boat->SetLocalPosition(glm::vec3(-2.0f, 4.0f, 0.0f));
 }
