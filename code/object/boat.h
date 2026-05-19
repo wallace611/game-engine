@@ -17,6 +17,7 @@ protected:
     bool showDebugPoints = true;
 public:
     Boat(Water* waterRef, bool showBuoyancyPoints = true);
-
     void Update(float deltatime);
+
+    void AddForce(glm::vec3 position, glm::vec3 force);
 };

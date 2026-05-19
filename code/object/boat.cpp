@@ -15,9 +15,9 @@ Boat::Boat(Water *waterRef, bool showBuoyancyPoints) {
     render->SetLocalRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
 
     // Create a grid of buoyancy sample points in local object space.
-    for (int x = -1; x <= 1; ++x) {
-        for (int z = -2; z <= 2; ++z) {
-            buoyancyPoints.emplace_back(glm::vec3(0.35f * x, -0.1f, 0.35f * z));
+    for (int x = -2; x <= 2; ++x) {
+        for (int z = -1; z <= 1; ++z) {
+            buoyancyPoints.emplace_back(glm::vec3(0.35f * x, 0.0f, 0.35f * z));
         }
     }
 
@@ -32,6 +32,27 @@ Boat::Boat(Water *waterRef, bool showBuoyancyPoints) {
             debugPointMarkers.push_back(marker);
         }
     }
+}
+
+void Boat::AddForce(glm::vec3 position, glm::vec3 force) {
+    glm::vec3 boatCenter = GetGlobalPosition();
+    glm::vec3 globalScale = GetGlobalScale();
+
+    glm::vec3 leverArm = position - boatCenter;
+
+    // Apply linear impulse (force treated as instantaneous impulse)
+    velocity += force / mass;
+
+    // Apply angular impulse using a simple scalar moment of inertia approximation
+    float momentOfInertia = (1.0f / 12.0f) * mass * (globalScale.x * globalScale.x + globalScale.z * globalScale.z);
+    glm::vec3 torque = glm::cross(leverArm, force);
+    if (momentOfInertia > 0.0f) {
+        angularVelocity += torque / momentOfInertia;
+    }
+
+    // Wake the boat if it was sleeping
+    isSleeping = false;
+    sleepTimer = 0.0f;
 }
 
 void Boat::Update(float deltatime) {

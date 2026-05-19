@@ -10,8 +10,11 @@
 
 #include "object/scene_object.h"
 #include "object/object.h"
+#include "object/boat.h"
 
 static Object* selectedObject = nullptr;
+static glm::vec3 ui_applyForcePosition = glm::vec3(0.0f);
+static glm::vec3 ui_applyForce = glm::vec3(0.0f);
 
 // --- Scene tree ---
 
@@ -67,6 +70,18 @@ static void DrawPropertiesPanel(Object* obj) {
     glm::vec3 gscale = obj->GetGlobalScale();
     if (ImGui::DragFloat3("Global Scale", glm::value_ptr(gscale), 0.05f, 0.001f, 100.0f))
         obj->SetGlobalScale(gscale);
+
+    // Boat-specific controls
+    if (Boat* boat = dynamic_cast<Boat*>(obj)) {
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Text("Boat Controls");
+        if (ImGui::DragFloat3("Force Position (world)", glm::value_ptr(ui_applyForcePosition), 0.1f)) {}
+        if (ImGui::DragFloat3("Force", glm::value_ptr(ui_applyForce), 0.1f)) {}
+        if (ImGui::Button("Apply Force")) {
+            boat->AddForce(ui_applyForcePosition, ui_applyForce);
+        }
+    }
 }
 
 // --- Public API ---
