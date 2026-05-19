@@ -81,6 +81,31 @@ static void DrawPropertiesPanel(Object* obj) {
         if (ImGui::Button("Apply Force")) {
             boat->AddForce(ui_applyForcePosition, ui_applyForce);
         }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Text("Metal Cube");
+        
+        // Display total mass and COM info
+        float totalMass = boat->GetTotalMass();
+        glm::vec3 comLocal = boat->GetCOMLocal();
+        ImGui::Text("Total Mass: %.2f kg", totalMass);
+        ImGui::Text("COM (local): (%.3f, %.3f, %.3f)", comLocal.x, comLocal.y, comLocal.z);
+        
+        // Control metal cube position and mass
+        Object* metalCube = boat->GetMetalCube();
+        if (metalCube) {
+            glm::vec3 metalPos = metalCube->GetLocalPosition();
+            if (ImGui::DragFloat3("Metal Cube Position (local)", glm::value_ptr(metalPos), 0.05f, -1.0f, 1.0f)) {
+                metalCube->SetLocalPosition(metalPos);
+            }
+        }
+        
+        // Metal cube mass
+        float metalMass = boat->GetMetalCubeMass();
+        if (ImGui::DragFloat("Metal Cube Mass (kg)", &metalMass, 1.0f, 0.1f, 10000.0f)) {
+            boat->SetMetalCubeMass(metalMass);
+        }
     }
 }
 
